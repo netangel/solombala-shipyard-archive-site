@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if page.title %}{{ page.title }} - {% endif %}Цифровой архив Соломбальской судоверфи</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Optional: Your custom CSS -->
+    {% if config.extra.custom_css %}
+    <link rel="stylesheet" href="{{ get_url(path=config.extra.custom_css) | safe }}">
+    {% endif %}
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <nav class="bg-white shadow-md">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between h-16 items-center">
+                <a href="{{ config.base_url }}" class="text-xl font-bold">
+                    Цифровой архив Соломбальской судоверфи
+                </a>
+                
+                <!-- Add navigation items here if needed -->
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-white shadow-md mt-8">
+        <div class="container mx-auto px-4 py-6">
+            <p class="text-left text-gray-600">
+                Лицензия:
+                <img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png"> Creative Commons «Attribution-NonCommercial-ShareAlike» («Атрибуция-Некоммерчески-СохранениеУсловий») 4.0 Всемирная.<br>
+                Эта лицензия означает, что вы можете свободно использовать чертежи, представленные на этом сайте, перерабатывать их, исправлять и развивать и создавать производные произведения на некоммерческой основе, с условием упоминания оригинального авторства и лицензирования производных работ на аналогичных лицензионных условиях.
+                </br>
+            </p>
+            <p class="text-center text-gray-600">
+                Товарищество поморского судостроения 
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

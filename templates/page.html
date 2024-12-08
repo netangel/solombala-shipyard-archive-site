@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <nav class="mb-8">
+        <a href="../" class="text-blue-600 hover:text-blue-800">← Вернуться в папку</a>
+    </nav>
+
+    <h1 class="text-3xl font-bold mb-4">{{ page.title }}</h1>
+
+    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+        {% if page.extra.png_file %}
+        <div class="max-h-[800px] overflow-auto">
+            <img 
+                src="{{ config.extra.bucket_url }}/{{ page.extra.directory_name }}/{{ page.extra.png_file }}" 
+                alt="{{ page.title }}"
+                class="w-full"
+            >
+        </div>
+        {% endif %}
+
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                {% if page.extra.year %}
+                <div>
+                    <h3 class="font-semibold text-gray-700">Год</h3>
+                    <p>{{ page.extra.year }}</p>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if page.taxonomies.tags %}
+            <div class="mt-4">
+                <h3 class="font-semibold text-gray-700 mb-2">Тэги</h3>
+                {% for tag in page.taxonomies.tags %}
+                <span class="inline-block bg-gray-100 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+                    {{ tag }}
+                </span>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

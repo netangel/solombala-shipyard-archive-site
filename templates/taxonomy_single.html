@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <nav class="mb-8">
+        <a href="/tags" class="text-blue-600 hover:text-blue-800">← Back to Tags</a>
+    </nav>
+
+    <h1 class="text-3xl font-bold mb-2">Tag: {{ term.name }}</h1>
+    <p class="text-gray-600 mb-8">{{ term.pages | length }} drawings</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for page in term.pages %}
+        <div class="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+            {% if page.extra.thumbnail %}
+            <div class="aspect-w-4 aspect-h-3">
+                <img 
+                    src="{{ config.extra.bucket_url }}/{{ page.extra.directory_name }}/thumbnails/{{ page.extra.thumbnail }}" 
+                    alt="Thumbnail for {{ page.title }}"
+                    class="object-cover w-full h-full"
+                >
+            </div>
+            {% endif %}
+            
+            <div class="p-6">
+                <h2 class="text-xl font-semibold mb-2">
+                    <a href="{{ page.permalink }}" class="hover:text-blue-600">
+                        {{ page.title }}
+                    </a>
+                </h2>
+
+                {% if page.extra.year %}
+                <p class="text-sm text-gray-500 mb-2">Year: {{ page.extra.year }}</p>
+                {% endif %}
+
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}
