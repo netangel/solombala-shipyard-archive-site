@@ -1,5 +1,5 @@
 # The URL the site will be built for
-base_url = "https://archive2.seapractic.ru"
+base_url = "https://archive-v2.seapractic.ru"
 
 # Whether to automatically compile all Sass files in the sass directory
 compile_sass = true
@@ -18,4 +18,4 @@ highlight_code = false
 
 [extra]
 # Put all your custom variables here
-bucket_url = "https://schooner-archive-v2.se-sto-1.linodeobjects.com/archive"
+bucket_url = "https://schooner-archive.eu-central-1.linodeobjects.com/archive"
