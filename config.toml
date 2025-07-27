@@ -18,4 +18,4 @@ highlight_code = false
 
 [extra]
 # Put all your custom variables here
-bucket_url = "http://archive.seapractic.ru/archive/"
+bucket_url = "http://archive.seapractic.ru/archive"
