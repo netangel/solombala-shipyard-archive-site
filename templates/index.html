@@ -17,7 +17,9 @@
                 {# Get the count of pages in this section #}
                 {% set page_count = section.pages | length %}
                 <p class="text-sm text-gray-500 mt-4">
-                    {{ page_count }} {% if page_count != 1 %}чертеж{% else %}чертежей{% endif %} в папке
+                    <span data-pluralize="drawing" data-count="{{ page_count }}" data-template="{count} {word} в папке">
+                        {{ page_count }} чертежей в папке
+                    </span>
                 </p>
             </div>
         </a>
