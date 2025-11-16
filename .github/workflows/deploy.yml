@@ -31,6 +31,8 @@ jobs:
 
       - name: Build site
         run: zola build
+        env:
+          BASE_URL: https://netangel.github.io/solombala-shipyard-archive-site
 
       - name: Upload artifact
         if: github.ref == 'refs/heads/main'
