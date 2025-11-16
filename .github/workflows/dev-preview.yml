@@ -37,14 +37,12 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: ${{ env.METADATA_REPO }}
-          ssh-key: ${{ secrets.METADATA_SSH_KEY }}
           path: source
 
       - name: Checkout PowerShell Scripts
         uses: actions/checkout@v4
         with:
           repository: ${{ env.SCRIPTS_REPO }}
-          ssh-key: ${{ secrets.SCRIPTS_SSH_KEY }}
           path: scripts
 
       - name: Install PowerShell
@@ -60,7 +58,7 @@ jobs:
       - name: Convert JSON to Zola Content
         shell: pwsh
         run: |
-          . ./scripts/Convert-ToZola.ps1 -MetadataPath ./source -ZolaContentPath ./template/content
+          . ./scripts/ConvertTo-ZolaContent.ps1 -MetadataPath ./source -ZolaContentPath ./template/content
 
       - name: Configure base URL for GitHub Pages
         run: |
