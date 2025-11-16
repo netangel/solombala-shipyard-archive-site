@@ -29,10 +29,13 @@ jobs:
         with:
           tool: zola@0.19.2
 
+      - name: Configure base URL for GitHub Pages
+        if: github.ref == 'refs/heads/main'
+        run: |
+          sed -i 's|base_url = ".*"|base_url = "https://netangel.github.io/solombala-shipyard-archive-site"|' config.toml
+
       - name: Build site
         run: zola build
-        env:
-          BASE_URL: https://netangel.github.io/solombala-shipyard-archive-site
 
       - name: Upload artifact
         if: github.ref == 'refs/heads/main'

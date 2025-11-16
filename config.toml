@@ -1,6 +1,5 @@
 # The URL the site will be built for
-# Can be overridden with BASE_URL environment variable
-base_url = env_var(name="BASE_URL", default="https://archive-v2.seapractic.ru")
+base_url = "https://archive-v2.seapractic.ru"
 
 # Whether to automatically compile all Sass files in the sass directory
 compile_sass = true
