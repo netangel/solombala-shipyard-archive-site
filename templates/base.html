@@ -17,8 +17,27 @@
                 <a href="{{ config.base_url }}" class="text-xl font-bold">
                     Цифровой архив Соломбальской судоверфи
                 </a>
-                
-                <!-- Add navigation items here if needed -->
+            </div>
+
+            <!-- Horizontal menu section -->
+            <div class="border-t border-gray-200">
+                <ul class="flex space-x-8 py-3">
+                    <li>
+                        <a href="{{ config.base_url }}" class="text-gray-700 hover:text-blue-600 transition-colors">
+                            Основной раздел
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ get_url(path='tags') | safe }}" class="text-gray-700 hover:text-blue-600 transition-colors">
+                            Категории
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ get_url(path='about') | safe }}" class="text-gray-700 hover:text-blue-600 transition-colors">
+                            О проекте
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
     </nav>

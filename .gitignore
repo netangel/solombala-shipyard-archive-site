@@ -1,3 +1,4 @@
 content/*
+!content/about.md
 public/*
 .DS_Store
