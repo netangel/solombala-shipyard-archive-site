@@ -4,7 +4,11 @@
 
 ## О проекте
 
-Этот проект представляет собой цифровой архив Соломбальской судоверфи, сохраняющий исторические материалы и делающий их доступными онлайн. Сайт развёрнут по адресу [archive-v2.seapractic.ru](https://archive-v2.seapractic.ru).
+Этот проект представляет собой цифровой архив Соломбальской судоверфи, сохраняющий исторические материалы и делающий их доступными онлайн.
+
+**Версии сайта:**
+- **Продакшн**: [archive-v2.seapractic.ru](https://archive-v2.seapractic.ru) - основная версия с пользовательским доменом
+- **Dev**: [netangel.github.io/solombala-shipyard-archive-site](https://netangel.github.io/solombala-shipyard-archive-site) - версия для разработки на GitHub Pages
 
 ## Технологии
 
@@ -69,6 +73,10 @@ zola check
 ## Развертывание
 
 Сайт автоматически развертывается на GitHub Pages при отправке изменений в основную ветку. Развертывание выполняется через GitHub Actions (см. `.github/workflows/zola.yml`).
+
+**Доступные версии:**
+- **GitHub Pages (dev)**: [https://netangel.github.io/solombala-shipyard-archive-site](https://netangel.github.io/solombala-shipyard-archive-site)
+- **Продакшн**: [https://archive-v2.seapractic.ru](https://archive-v2.seapractic.ru) (с пользовательским доменом)
 
 ## Управление содержимым
 
