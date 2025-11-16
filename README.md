@@ -1,0 +1,133 @@
+# Сайт архива Соломбальской судоверфи
+
+Статический сайт исторического архива Соломбальской судоверфи, созданный с помощью [Zola](https://www.getzola.org/).
+
+## О проекте
+
+Этот проект представляет собой цифровой архив Соломбальской судоверфи, сохраняющий исторические материалы и делающий их доступными онлайн.
+
+**Версии сайта:**
+- **Продакшн**: [archive-v2.seapractic.ru](https://archive-v2.seapractic.ru) - основная версия с пользовательским доменом
+- **Dev**: [netangel.github.io/solombala-shipyard-archive-site](https://netangel.github.io/solombala-shipyard-archive-site) - версия для разработки на GitHub Pages
+
+## Технологии
+
+- **Генератор статических сайтов**: [Zola](https://www.getzola.org/) - быстрый генератор статических сайтов на Rust
+- **Шаблонизатор**: Tera
+- **Развертывание**: GitHub Pages через GitHub Actions
+- **Хостинг**: GitHub Pages с пользовательским доменом
+
+## Структура проекта
+
+```
+.
+├── config.toml          # Конфигурация Zola
+├── content/             # Файлы содержимого в Markdown
+├── templates/           # HTML-шаблоны (Tera)
+├── static/              # Статические ресурсы (CSS, JS, изображения)
+├── .github/workflows/   # GitHub Actions для развертывания
+└── .claude/             # Конфигурация Claude Code
+```
+
+## Начало работы
+
+### Предварительные требования
+
+- Установленный [Zola](https://www.getzola.org/documentation/getting-started/installation/)
+
+### Локальная разработка
+
+1. Клонируйте репозиторий:
+   ```bash
+   git clone https://github.com/netangel/solombala-shipyard-archive-site.git
+   cd solombala-shipyard-archive-site
+   ```
+
+2. Запустите сайт локально:
+   ```bash
+   zola serve
+   ```
+
+3. Откройте браузер по адресу `http://127.0.0.1:1111`
+
+Сервер разработки включает автоматическую перезагрузку - изменения в содержимом и шаблонах автоматически обновят страницу в браузере.
+
+### Сборка
+
+Для сборки статического сайта:
+
+```bash
+zola build
+```
+
+Сгенерированный сайт будет находиться в директории `public/`.
+
+### Проверка
+
+Для проверки ошибок в содержимом и конфигурации:
+
+```bash
+zola check
+```
+
+## Развертывание
+
+Сайт автоматически развертывается на GitHub Pages при отправке изменений в основную ветку. Развертывание выполняется через GitHub Actions (см. `.github/workflows/zola.yml`).
+
+**Доступные версии:**
+- **GitHub Pages (dev)**: [https://netangel.github.io/solombala-shipyard-archive-site](https://netangel.github.io/solombala-shipyard-archive-site)
+- **Продакшн**: [https://archive-v2.seapractic.ru](https://archive-v2.seapractic.ru) (с пользовательским доменом)
+
+## Управление содержимым
+
+### Добавление новой страницы
+
+Создайте новый Markdown-файл в директории `content/`:
+
+```markdown
++++
+title = "Заголовок страницы"
+date = 2025-11-16
+[taxonomies]
+tags = ["тег1", "тег2"]
++++
+
+Содержимое вашей страницы...
+```
+
+### Шаблоны
+
+Шаблоны находятся в директории `templates/` и используют язык шаблонов Tera:
+
+- `base.html` - базовый шаблон с общей структурой
+- `index.html` - шаблон главной страницы
+- `page.html` - шаблон отдельной страницы
+- `section.html` - шаблон списка раздела
+- `taxonomy_list.html` - список всех тегов
+- `taxonomy_single.html` - страница отдельного тега
+
+## Возможности
+
+- Полнотекстовый поиск (включен через `build_search_index = true`)
+- Таксономия тегов с RSS-лентами
+- Компиляция Sass
+- Интеграция архивных материалов через bucket URL
+
+## Интеграция с Claude Code
+
+Проект настроен для работы с [Claude Code](https://docs.claude.com/en/docs/claude-code). Полезные команды:
+
+- `/build` - Собрать сайт
+- `/check` - Проверить на наличие ошибок
+- `/serve` - Запустить локальный сервер разработки
+- `/new-page` - Создать новую страницу контента
+
+Подробнее см. `.claude/project.md`.
+
+## Лицензия
+
+Подробности см. в файле [LICENSE](LICENSE).
+
+## Участие в разработке
+
+Приветствуются любые вклады! Не стесняйтесь отправлять Pull Request.
