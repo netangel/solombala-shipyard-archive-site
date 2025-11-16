@@ -1,125 +1,125 @@
-# Solombala Shipyard Archive Site
+# Сайт архива Соломбальской судоверфи
 
-A static website for the Solombala Shipyard historical archive, built with [Zola](https://www.getzola.org/).
+Статический сайт исторического архива Соломбальской судоверфи, созданный с помощью [Zola](https://www.getzola.org/).
 
-## About
+## О проекте
 
-This project hosts the digital archive of the Solombala Shipyard, preserving historical materials and making them accessible online. The site is deployed at [archive-v2.seapractic.ru](https://archive-v2.seapractic.ru).
+Этот проект представляет собой цифровой архив Соломбальской судоверфи, сохраняющий исторические материалы и делающий их доступными онлайн. Сайт развёрнут по адресу [archive-v2.seapractic.ru](https://archive-v2.seapractic.ru).
 
-## Technology
+## Технологии
 
-- **Static Site Generator**: [Zola](https://www.getzola.org/) - A fast static site generator in Rust
-- **Templating**: Tera
-- **Deployment**: GitHub Pages via GitHub Actions
-- **Hosting**: GitHub Pages with custom domain
+- **Генератор статических сайтов**: [Zola](https://www.getzola.org/) - быстрый генератор статических сайтов на Rust
+- **Шаблонизатор**: Tera
+- **Развертывание**: GitHub Pages через GitHub Actions
+- **Хостинг**: GitHub Pages с пользовательским доменом
 
-## Project Structure
+## Структура проекта
 
 ```
 .
-├── config.toml          # Zola configuration
-├── content/             # Markdown content files
-├── templates/           # HTML templates (Tera)
-├── static/              # Static assets (CSS, JS, images)
-├── .github/workflows/   # GitHub Actions for deployment
-└── .claude/             # Claude Code configuration
+├── config.toml          # Конфигурация Zola
+├── content/             # Файлы содержимого в Markdown
+├── templates/           # HTML-шаблоны (Tera)
+├── static/              # Статические ресурсы (CSS, JS, изображения)
+├── .github/workflows/   # GitHub Actions для развертывания
+└── .claude/             # Конфигурация Claude Code
 ```
 
-## Getting Started
+## Начало работы
 
-### Prerequisites
+### Предварительные требования
 
-- [Zola](https://www.getzola.org/documentation/getting-started/installation/) installed on your system
+- Установленный [Zola](https://www.getzola.org/documentation/getting-started/installation/)
 
-### Local Development
+### Локальная разработка
 
-1. Clone the repository:
+1. Клонируйте репозиторий:
    ```bash
    git clone https://github.com/netangel/solombala-shipyard-archive-site.git
    cd solombala-shipyard-archive-site
    ```
 
-2. Serve the site locally:
+2. Запустите сайт локально:
    ```bash
    zola serve
    ```
 
-3. Open your browser to `http://127.0.0.1:1111`
+3. Откройте браузер по адресу `http://127.0.0.1:1111`
 
-The development server includes live reload - changes to content and templates will automatically refresh the browser.
+Сервер разработки включает автоматическую перезагрузку - изменения в содержимом и шаблонах автоматически обновят страницу в браузере.
 
-### Building
+### Сборка
 
-To build the static site:
+Для сборки статического сайта:
 
 ```bash
 zola build
 ```
 
-The generated site will be in the `public/` directory.
+Сгенерированный сайт будет находиться в директории `public/`.
 
-### Checking
+### Проверка
 
-To check for errors in content and configuration:
+Для проверки ошибок в содержимом и конфигурации:
 
 ```bash
 zola check
 ```
 
-## Deployment
+## Развертывание
 
-The site is automatically deployed to GitHub Pages when changes are pushed to the main branch. The deployment is handled by GitHub Actions (see `.github/workflows/zola.yml`).
+Сайт автоматически развертывается на GitHub Pages при отправке изменений в основную ветку. Развертывание выполняется через GitHub Actions (см. `.github/workflows/zola.yml`).
 
-## Content Management
+## Управление содержимым
 
-### Adding a New Page
+### Добавление новой страницы
 
-Create a new Markdown file in the `content/` directory:
+Создайте новый Markdown-файл в директории `content/`:
 
 ```markdown
 +++
-title = "Page Title"
+title = "Заголовок страницы"
 date = 2025-11-16
 [taxonomies]
-tags = ["tag1", "tag2"]
+tags = ["тег1", "тег2"]
 +++
 
-Your content here...
+Содержимое вашей страницы...
 ```
 
-### Templates
+### Шаблоны
 
-Templates are located in the `templates/` directory and use the Tera templating language:
+Шаблоны находятся в директории `templates/` и используют язык шаблонов Tera:
 
-- `base.html` - Base template with common layout
-- `index.html` - Homepage template
-- `page.html` - Individual page template
-- `section.html` - Section listing template
-- `taxonomy_list.html` - List of all tags
-- `taxonomy_single.html` - Single tag page
+- `base.html` - базовый шаблон с общей структурой
+- `index.html` - шаблон главной страницы
+- `page.html` - шаблон отдельной страницы
+- `section.html` - шаблон списка раздела
+- `taxonomy_list.html` - список всех тегов
+- `taxonomy_single.html` - страница отдельного тега
 
-## Features
+## Возможности
 
-- Full-text search (enabled via `build_search_index = true`)
-- Tag taxonomy with RSS feeds
-- Sass compilation
-- Archive materials integration via bucket URL
+- Полнотекстовый поиск (включен через `build_search_index = true`)
+- Таксономия тегов с RSS-лентами
+- Компиляция Sass
+- Интеграция архивных материалов через bucket URL
 
-## Claude Code Integration
+## Интеграция с Claude Code
 
-This project is configured for [Claude Code](https://docs.claude.com/en/docs/claude-code). Useful commands:
+Проект настроен для работы с [Claude Code](https://docs.claude.com/en/docs/claude-code). Полезные команды:
 
-- `/build` - Build the site
-- `/check` - Check for issues
-- `/serve` - Start local development server
-- `/new-page` - Create a new content page
+- `/build` - Собрать сайт
+- `/check` - Проверить на наличие ошибок
+- `/serve` - Запустить локальный сервер разработки
+- `/new-page` - Создать новую страницу контента
 
-See `.claude/project.md` for more details.
+Подробнее см. `.claude/project.md`.
 
-## License
+## Лицензия
 
-See [LICENSE](LICENSE) file for details.
+Подробности см. в файле [LICENSE](LICENSE).
 
-## Contributing
+## Участие в разработке
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Приветствуются любые вклады! Не стесняйтесь отправлять Pull Request.
