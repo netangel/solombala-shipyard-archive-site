@@ -1,9 +1,9 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
 <div class="container mx-auto px-4 py-8">
     <nav class="mb-8">
-        <a href="/" class="text-blue-600 hover:text-blue-800">← Вернуться на главную</a>
+        <a href="/" class="text-blue-600 hover:text-blue-800"
+            >← Вернуться на главную</a
+        >
     </nav>
 
     <h1 class="text-3xl font-bold mb-2">{{ section.title }}</h1>
@@ -13,17 +13,19 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {% for page in section.pages %}
-        <div class="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+        <div
+            class="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+        >
             {% if page.extra.thumbnail %}
             <div class="aspect-w-4 aspect-h-3">
-                <img 
-                    src="{{ config.extra.bucket_url }}/{{ section.extra.directory_name }}/Thumbnails/{{ page.extra.thumbnail }}" 
+                <img
+                    src="{{ config.extra.media_url }}/{{ section.extra.directory_name }}/Thumbnails/{{ page.extra.thumbnail }}"
                     alt="Thumbnail for {{ page.title }}"
                     class="object-cover w-full h-full"
-                >
+                />
             </div>
             {% endif %}
-            
+
             <div class="p-6">
                 <h2 class="text-xl font-semibold mb-2">
                     <a href="{{ page.permalink }}" class="hover:text-blue-600">
@@ -32,18 +34,19 @@
                 </h2>
 
                 {% if page.extra.year %}
-                <p class="text-sm text-gray-500 mb-2">Год: {{ page.extra.year }}</p>
-                {% endif %}
-
-                {% if page.taxonomies.tags %}
+                <p class="text-sm text-gray-500 mb-2">
+                    Год: {{ page.extra.year }}
+                </p>
+                {% endif %} {% if page.taxonomies.tags %}
                 <div class="mt-4">
                     <p class="text-sm text-gray-500 mb-2">
-                        Тэги:
-                    {% for tag in page.taxonomies.tags %}
-                    <span class="inline-block bg-gray-100 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
-                        {{ tag }}
-                    </span>
-                    {% endfor %}
+                        Тэги: {% for tag in page.taxonomies.tags %}
+                        <span
+                            class="inline-block bg-gray-100 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2"
+                        >
+                            {{ tag }}
+                        </span>
+                        {% endfor %}
                     </p>
                 </div>
                 {% endif %}

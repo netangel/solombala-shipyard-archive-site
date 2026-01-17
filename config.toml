@@ -11,11 +11,10 @@ taxonomies = [
     {name = "tags", feed = true}
 ]
 
-[markdown]
-# Whether to do syntax highlighting
-# Theme can be customised by setting the `highlight_theme` variable to a theme supported by Zola
-highlight_code = false
+[markdown.highlighting]
+# Whether to do syntax highlighting (Zola 0.22+ syntax)
+enabled = false
 
 [extra]
 # Put all your custom variables here
-bucket_url = "http://archive.seapractic.ru/archive"
+media_url = "/media"
