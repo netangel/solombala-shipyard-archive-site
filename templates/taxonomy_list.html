@@ -1,25 +1,44 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
 <div class="container mx-auto px-4 py-8">
     <nav class="mb-8">
-        <a href="/" class="text-blue-600 hover:text-blue-800">← Back to Home</a>
+        <a href="/" class="text-blue-600 hover:text-blue-800"
+            >← Назад на главную</a
+        >
     </nav>
 
-    <h1 class="text-3xl font-bold mb-8">All Tags</h1>
+    <h1 class="text-3xl font-bold mb-8">Все категории</h1>
 
-    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+    {# Group terms by first character #} {% set_global grouped_terms = {} %} {%
+    for term in terms %} {% set first_char = term.name | slice(end=1) | upper %}
+    {% set_global current_group = grouped_terms[first_char] | default(value=[])
+    %} {% set_global current_group = current_group | concat(with=term) %} {%
+    set_global grouped_terms = grouped_terms | insert(key=first_char,
+    value=current_group) %} {% endfor %} {# Sort the groups by character #} {%
+    set sorted_chars = grouped_terms | sort %} {# Display each group #} {% for
+    char, group in sorted_chars %}
+    <div class="bg-white shadow-lg rounded-lg overflow-hidden mb-6">
+        <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
+            <h2 class="text-2xl font-semibold text-gray-800">
+                Категории "{{ char }}"
+            </h2>
+        </div>
         <div class="p-6">
             <div class="flex flex-wrap gap-4">
-                {% for term in terms %}
-                <a href="{{ term.permalink }}" 
-                   class="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 rounded-full px-4 py-2 text-gray-700 transition-colors duration-200">
+                {% for term in group %}
+                <a
+                    href="{{ term.permalink }}"
+                    class="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 rounded-full px-4 py-2 text-gray-700 transition-colors duration-200"
+                >
                     <span class="font-semibold">{{ term.name }}</span>
-                    <span class="bg-gray-200 text-gray-600 text-sm rounded-full px-2 py-0.5">{{ term.pages | length }}</span>
+                    <span
+                        class="bg-gray-200 text-gray-600 text-sm rounded-full px-2 py-0.5"
+                        >{{ term.pages | length }}</span
+                    >
                 </a>
                 {% endfor %}
             </div>
         </div>
     </div>
+    {% endfor %}
 </div>
 {% endblock content %}
