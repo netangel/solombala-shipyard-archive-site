@@ -8,14 +8,12 @@
 
     <h1 class="text-3xl font-bold mb-8">Все категории</h1>
 
-    {# Group terms by first character #} {% set_global grouped_terms = {} %} {%
+    {# Collect all unique first characters #} {% set_global all_chars = [] %} {%
     for term in terms %} {% set first_char = term.name | slice(end=1) | upper %}
-    {% set_global current_group = grouped_terms[first_char] | default(value=[])
-    %} {% set_global current_group = current_group | concat(with=term) %} {%
-    set_global grouped_terms = grouped_terms | insert(key=first_char,
-    value=current_group) %} {% endfor %} {# Sort the groups by character #} {%
-    set sorted_chars = grouped_terms | sort %} {# Display each group #} {% for
-    char, group in sorted_chars %}
+    {% if first_char not in all_chars %} {% set_global all_chars = all_chars |
+    concat(with=first_char) %} {% endif %} {% endfor %} {# Sort characters #} {%
+    set sorted_chars = all_chars | sort %} {# Display each group #} {% for char
+    in sorted_chars %}
     <div class="bg-white shadow-lg rounded-lg overflow-hidden mb-6">
         <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
             <h2 class="text-2xl font-semibold text-gray-800">
@@ -24,7 +22,8 @@
         </div>
         <div class="p-6">
             <div class="flex flex-wrap gap-4">
-                {% for term in group %}
+                {% for term in terms %} {% set first_char = term.name |
+                slice(end=1) | upper %} {% if first_char == char %}
                 <a
                     href="{{ term.permalink }}"
                     class="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 rounded-full px-4 py-2 text-gray-700 transition-colors duration-200"
@@ -35,7 +34,7 @@
                         >{{ term.pages | length }}</span
                     >
                 </a>
-                {% endfor %}
+                {% endif %} {% endfor %}
             </div>
         </div>
     </div>
