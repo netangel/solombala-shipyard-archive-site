@@ -11,10 +11,6 @@ taxonomies = [
     {name = "tags", feed = true}
 ]
 
-[markdown.highlighting]
-# Whether to do syntax highlighting (Zola 0.22+ syntax)
-enabled = false
-
 [extra]
 # Put all your custom variables here
 media_url = "/media"
