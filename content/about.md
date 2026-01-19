@@ -1,7 +1,7 @@
 +++
 title = "О проекте"
 description = "Информация о цифровом архиве Соломбальской судоверфи"
-template = "page.html"
+template = "content-page.html"
 +++
 
 # О проекте
