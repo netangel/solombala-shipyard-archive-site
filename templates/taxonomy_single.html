@@ -2,12 +2,12 @@
 <div class="container mx-auto px-4 py-8">
     <nav class="mb-8">
         <a href="/tags" class="text-blue-600 hover:text-blue-800"
-            >← Back to Tags</a
+            >← Обратно к списку категорий</a
         >
     </nav>
 
-    <h1 class="text-3xl font-bold mb-2">Tag: {{ term.name }}</h1>
-    <p class="text-gray-600 mb-8">{{ term.pages | length }} drawings</p>
+    <h1 class="text-3xl font-bold mb-2">Категории: {{ term.name }}</h1>
+    <p class="text-gray-600 mb-8">{{ term.pages | length }} чертежей</p>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {% for page in term.pages %}
@@ -33,7 +33,7 @@
 
                 {% if page.extra.year %}
                 <p class="text-sm text-gray-500 mb-2">
-                    Year: {{ page.extra.year }}
+                    Год: {{ page.extra.year }}
                 </p>
                 {% endif %}
             </div>
