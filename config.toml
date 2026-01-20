@@ -7,6 +7,12 @@ compile_sass = true
 # Whether to build a search index to be used later on by a JavaScript library
 build_search_index = true
 
+# Minify HTML output
+minify_html = true
+
+# Generate feeds (RSS/Atom)
+generate_feeds = false
+
 taxonomies = [
     {name = "tags", feed = true}
 ]
