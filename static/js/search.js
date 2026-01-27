@@ -29,19 +29,9 @@ class ZolaSearch {
       }
       const searchIndex = await response.json();
 
-      // Debug: Log first item to see structure
-      if (searchIndex.length > 0) {
-        console.log("Search index sample item:", searchIndex[0]);
-      }
-
       // Initialize Fuse with the search index
       this.fuse = new Fuse(searchIndex, this.fuseOptions);
       this.initialized = true;
-      console.log(
-        "Search index loaded successfully with",
-        searchIndex.length,
-        "items",
-      );
     } catch (error) {
       console.error("Error loading search index:", error);
       throw error;
@@ -145,8 +135,8 @@ function performSearch(query) {
   const resultHtml = topResults
     .map((result) => {
       const item = result.item;
-      // Zola's Fuse.js format uses 'path' or 'permalink' field
-      const url = item.permalink || item.path || "#";
+      // Zola's Fuse.js format uses 'url' field
+      const url = item.url || item.permalink || item.path || "#";
       const title = item.title || "Без названия";
       const body = item.body || item.content || "";
       const excerpt = getExcerpt(body, query);
