@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% if page.title %}{{ page.title }} - {% endif %}Цифровой архив Соломбальской судоверфи</title>
 
+    <!-- Privacy-friendly analytics by Plausible -->
+    <script async src="https://plausible.dwal.in/js/pa-cPh6rnJO0oIpyLss8N2Zd.js"></script>
+    <script>
+      window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+      plausible.init()
+    </script>
+
     <!-- Optional: Your custom CSS -->
     {% if config.extra.custom_css %}
     <link rel="stylesheet" href="{{ get_url(path=config.extra.custom_css) | safe }}">
