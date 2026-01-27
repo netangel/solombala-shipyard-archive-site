@@ -131,7 +131,7 @@ function performSearch(query) {
   }
 
   // Limit to top 10 results
-  const topResults = results.slice(0, 10);
+  const topResults = results.slice(0, 50);
 
   const resultHtml = topResults
     .map((result) => {
