@@ -29,10 +29,19 @@ class ZolaSearch {
       }
       const searchIndex = await response.json();
 
+      // Debug: Log first item to see structure
+      if (searchIndex.length > 0) {
+        console.log("Search index sample item:", searchIndex[0]);
+      }
+
       // Initialize Fuse with the search index
       this.fuse = new Fuse(searchIndex, this.fuseOptions);
       this.initialized = true;
-      console.log("Search index loaded successfully");
+      console.log(
+        "Search index loaded successfully with",
+        searchIndex.length,
+        "items",
+      );
     } catch (error) {
       console.error("Error loading search index:", error);
       throw error;
@@ -136,11 +145,15 @@ function performSearch(query) {
   const resultHtml = topResults
     .map((result) => {
       const item = result.item;
-      const excerpt = getExcerpt(item.body, query);
+      // Zola's Fuse.js format uses 'path' or 'permalink' field
+      const url = item.permalink || item.path || "#";
+      const title = item.title || "Без названия";
+      const body = item.body || item.content || "";
+      const excerpt = getExcerpt(body, query);
 
       return `
-            <a href="${item.permalink}" class="block p-4 hover:bg-gray-50 border-b border-gray-200 transition-colors">
-                <h3 class="font-semibold text-gray-900 mb-1">${highlightMatch(item.title, query)}</h3>
+            <a href="${url}" class="block p-4 hover:bg-gray-50 border-b border-gray-200 transition-colors">
+                <h3 class="font-semibold text-gray-900 mb-1">${highlightMatch(title, query)}</h3>
                 ${excerpt ? `<p class="text-sm text-gray-600">${excerpt}</p>` : ""}
             </a>
         `;
