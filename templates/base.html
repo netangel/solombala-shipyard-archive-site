@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% if page.title %}{{ page.title }} - {% endif %}Цифровой архив Соломбальской судоверфи</title>
-    
+
     <!-- Optional: Your custom CSS -->
     {% if config.extra.custom_css %}
     <link rel="stylesheet" href="{{ get_url(path=config.extra.custom_css) | safe }}">
@@ -21,23 +21,41 @@
 
             <!-- Horizontal menu section -->
             <div class="border-t border-gray-200">
-                <ul class="flex space-x-8 py-3">
-                    <li>
-                        <a href="{{ config.base_url }}" class="text-gray-700 hover:text-blue-600 transition-colors">
-                            Основной раздел
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ get_url(path='tags') | safe }}" class="text-gray-700 hover:text-blue-600 transition-colors">
-                            Категории
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ get_url(path='about') | safe }}" class="text-gray-700 hover:text-blue-600 transition-colors">
-                            О проекте
-                        </a>
-                    </li>
-                </ul>
+                <div class="flex justify-between items-center py-3">
+                    <ul class="flex space-x-8">
+                        <li>
+                            <a href="{{ config.base_url }}" class="text-gray-700 hover:text-blue-600 transition-colors">
+                                Основной раздел
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ get_url(path='tags') | safe }}" class="text-gray-700 hover:text-blue-600 transition-colors">
+                                Категории
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ get_url(path='about') | safe }}" class="text-gray-700 hover:text-blue-600 transition-colors">
+                                О проекте
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- Search bar -->
+                    {% block search_bar %}
+                    <div class="relative w-64">
+                        <input
+                            type="text"
+                            id="search-input"
+                            placeholder="Поиск..."
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        />
+                        <div
+                            id="search-results"
+                            class="hidden absolute top-full left-0 right-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg max-h-96 overflow-y-auto z-50"
+                        ></div>
+                    </div>
+                    {% endblock search_bar %}
+                </div>
             </div>
         </div>
     </nav>
@@ -55,7 +73,7 @@
                 </br>
             </p>
             <p class="text-center text-gray-600">
-                Товарищество поморского судостроения 
+                Товарищество поморского судостроения
             </p>
         </div>
     </footer>
@@ -66,5 +84,11 @@
 
 <!-- Pluralization utility -->
 <script src="{{ get_url(path="js/pluralization.js") }}"></script>
+
+<!-- Fuse.js for search -->
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
+
+<!-- Search functionality -->
+<script src="{{ get_url(path="js/search.js") }}"></script>
 
 </html>

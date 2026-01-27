@@ -1,6 +1,9 @@
 # The URL the site will be built for
 base_url = "https://archive.seapractic.ru"
 
+# Default language for the site
+default_language = "ru"
+
 # Whether to automatically compile all Sass files in the sass directory
 compile_sass = true
 
@@ -16,6 +19,10 @@ generate_feeds = false
 taxonomies = [
     {name = "tags", feed = true}
 ]
+
+[search]
+# Use Fuse.js for better Russian language support
+index_format = "fuse_json"
 
 [extra]
 # Put all your custom variables here
