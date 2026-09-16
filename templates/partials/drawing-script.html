@@ -1,0 +1,47 @@
+{# Зум и клавиатурная навигация просмотрщика (1h). #}
+<script>
+(function () {
+  var frame = document.getElementById("stage-frame");
+  var img = document.getElementById("stage-image");
+  if (!frame || !img) return;
+  var levels = [50, 75, 100, 150, 200, 300];
+  var idx = 2;
+  var readout = document.querySelector("[data-zoom-level]");
+
+  function apply() {
+    frame.dataset.zoom = "fill";
+    img.style.width = levels[idx] + "%";
+    img.style.maxHeight = "none";
+    if (readout) readout.textContent = levels[idx] + "%";
+    var f = document.querySelector("[data-zoom-fit]");
+    if (f) f.setAttribute("aria-pressed", "false");
+  }
+  function fit() {
+    frame.dataset.zoom = "fit";
+    img.style.width = "100%";
+    img.style.maxHeight = "";
+    idx = 2;
+    if (readout) readout.textContent = "вписано";
+    var f = document.querySelector("[data-zoom-fit]");
+    if (f) f.setAttribute("aria-pressed", "true");
+  }
+
+  var zin = document.querySelector("[data-zoom-in]");
+  var zout = document.querySelector("[data-zoom-out]");
+  var zfit = document.querySelector("[data-zoom-fit]");
+  if (zin) zin.addEventListener("click", function () { idx = Math.min(idx + 1, levels.length - 1); apply(); });
+  if (zout) zout.addEventListener("click", function () { idx = Math.max(idx - 1, 0); apply(); });
+  if (zfit) zfit.addEventListener("click", fit);
+  if (zfit) zfit.setAttribute("aria-pressed", "true");
+  if (readout) readout.addEventListener("click", apply);
+  fit();
+
+  document.addEventListener("keydown", function (e) {
+    if (e.target.tagName === "INPUT") return;
+    var prev = document.querySelector(".viewer-bar__step:not(.viewer-bar__step--next)");
+    var next = document.querySelector(".viewer-bar__step--next");
+    if (e.key === "ArrowLeft" && prev) prev.click();
+    if (e.key === "ArrowRight" && next) next.click();
+  });
+})();
+</script>

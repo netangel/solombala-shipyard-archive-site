@@ -1,8 +1,14 @@
 {% extends "base.html" %}
 
-{# Статья / О проекте #}
+{# Статья / О проекте.
+   Листы архива часто приезжают без template = "drawing.html" в front-matter —
+   такие страницы попадают сюда, поэтому проверяем признаки чертежа и показываем макет 1h. #}
 
 {% block content %}
+{% set is_sheet = page.extra.png_file or page.extra.tif_file or page.extra.thumbnail %}
+{% if is_sheet %}
+{% include "partials/drawing-body.html" %}
+{% else %}
 <div class="wrap">
     <nav class="crumbs" aria-label="Хлебные крошки">
         <a href="{{ config.base_url }}">Архив</a> <span aria-hidden="true">/</span> <strong>{{ page.title }}</strong>
@@ -30,4 +36,10 @@
     </div>
     {% endif %}
 </div>
+{% endif %}
 {% endblock content %}
+
+{% block body_extra %}
+{% set is_sheet = page.extra.png_file or page.extra.tif_file or page.extra.thumbnail %}
+{% if is_sheet %}{% include "partials/drawing-script.html" %}{% endif %}
+{% endblock body_extra %}

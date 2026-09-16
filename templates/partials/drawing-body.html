@@ -1,0 +1,149 @@
+{# Тело страницы чертежа (1h): тёмный просмотрщик + учётная карточка.
+   Включается из drawing.html и из page.html (когда лист не объявил template).
+   Данные: extra.directory_name, extra.png_file, extra.tif_file, extra.thumbnail.
+   Всё, чего генератор пока не выдаёт (размеры, DPI, вес файлов, дата),
+   подставляется заглушкой и помечается классом .mock. #}
+
+{% set dir = page.extra.directory_name | default(value="") %}
+{% set media = config.extra.media_url ~ "/" ~ dir %}
+{% set sheet = page.extra.png_file | default(value="") %}
+{% set thumb = page.extra.thumbnail | default(value="") %}
+{% set parent = get_section(path=page.ancestors | last) %}
+{% set sheet_no = page.extra.sheet_no | default(value=sheet | split(pat="_") | first) %}
+
+<div class="stage">
+    <div class="stage__frame" id="stage-frame" data-zoom="fit">
+        {% if sheet %}
+        <img id="stage-image" src="{{ media }}/{{ sheet }}" alt="{{ page.title }}">
+        {% elif thumb %}
+        <img id="stage-image" src="{{ media }}/Thumbnails/{{ thumb }}" alt="{{ page.title }}">
+        {% else %}
+        <div class="stage__empty">скан ещё не выложен</div>
+        {% endif %}
+    </div>
+
+    {% if sheet or thumb %}
+    <div class="toolbar">
+        <button type="button" data-zoom-out aria-label="Уменьшить">−</button>
+        <button type="button" data-zoom-level>100%</button>
+        <button type="button" data-zoom-in aria-label="Увеличить">+</button>
+        <button type="button" data-zoom-fit class="toolbar__fit" aria-label="Вписать в экран" title="Вписать в экран">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true">
+                <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
+                <path d="M21 8V5a2 2 0 0 0-2-2h-3"></path>
+                <path d="M3 16v3a2 2 0 0 0 2 2h3"></path>
+                <path d="M16 21h3a2 2 0 0 0 2-2v-3"></path>
+            </svg>
+        </button>
+        {% if sheet %}
+        <a class="toolbar__download" href="{{ media }}/{{ sheet }}" download>скачать</a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% if page.extra.multi_page and page.extra.png_file_pages %}
+    <div class="pages" role="list" aria-label="Листы документа">
+        <a class="pages__item" role="listitem" aria-current="true" href="{{ media }}/{{ sheet }}" target="_blank" rel="noopener">
+            <img src="{{ media }}/Thumbnails/{{ thumb | default(value=sheet) }}" alt="Лист 1" loading="lazy">
+            <span>Лист 1</span>
+        </a>
+        {% for extra_page in page.extra.png_file_pages %}
+        <a class="pages__item" role="listitem" href="{{ media }}/{{ extra_page }}" target="_blank" rel="noopener">
+            <img src="{{ media }}/Thumbnails/{{ extra_page }}" alt="Лист {{ loop.index + 1 }}" loading="lazy">
+            <span>Лист {{ loop.index + 1 }}</span>
+        </a>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+
+<div class="wrap">
+    <div class="record">
+        <div>
+            <div class="label">Описание листа</div>
+            <h1>{{ page.title }}</h1>
+            {% if page.content %}
+            <div style="font-size:15px">{{ page.content | safe }}</div>
+            {% elif page.description %}
+            <p>{{ page.description }}</p>
+            {% endif %}
+            {% if page.taxonomies.tags %}
+            <div class="chips" style="margin-top:var(--space-3)">
+                {% for tag in page.taxonomies.tags %}
+                <a class="chip" href="{{ get_taxonomy_url(kind='tags', name=tag) | safe }}">{{ tag }}</a>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <div>
+            <div class="label">Учётные данные</div>
+            <dl class="spec">
+                {% if sheet_no %}
+                <div class="spec__row"><dt>Номер</dt><dd>{{ sheet_no }}</dd></div>
+                {% endif %}
+                <div class="spec__row">
+                    <dt>Папка</dt>
+                    <dd>{{ page.extra.folder_name | default(value=parent.title) }}
+                        {% if dir %}<span class="spec__sub">{{ dir }}</span>{% endif %}
+                    </dd>
+                </div>
+                {% if page.extra.tif_file %}
+                <div class="spec__row"><dt>Оригинал</dt><dd>{{ page.extra.tif_file }}</dd></div>
+                {% elif page.extra.original_name %}
+                <div class="spec__row"><dt>Оригинал</dt><dd>{{ page.extra.original_name }}</dd></div>
+                {% endif %}
+                <div class="spec__row">
+                    <dt>Дата</dt>
+                    {% if page.extra.date %}<dd>{{ page.extra.date }}</dd>
+                    {% elif page.extra.year %}<dd>{{ page.extra.year }}</dd>
+                    {% else %}<dd class="mock">1963 · по описи папки</dd>{% endif %}
+                </div>
+                <div class="spec__row">
+                    <dt>Лист</dt>
+                    {% if page.extra.source_size %}<dd>{{ page.extra.source_size }}</dd>
+                    {% else %}<dd class="mock">A1 · 594 × 841 мм</dd>{% endif %}
+                </div>
+                <div class="spec__row">
+                    <dt>Скан</dt>
+                    {% if page.extra.scan_dpi or page.extra.scan_size %}
+                    <dd>{{ page.extra.scan_dpi | default(value="") }}{% if page.extra.scan_dpi and page.extra.scan_size %} · {% endif %}{{ page.extra.scan_size | default(value="") }}</dd>
+                    {% else %}<dd class="mock">600 dpi · 14 030 × 19 860 px</dd>{% endif %}
+                </div>
+                <div class="spec__row">
+                    <dt>Листов</dt>
+                    <dd>{% if page.extra.multi_page %}{{ page.extra.png_file_pages | length + 1 }}{% else %}1{% endif %}</dd>
+                </div>
+            </dl>
+        </div>
+
+        <div>
+            <div class="label">Файлы и лицензия</div>
+            <div class="files">
+                {% if sheet %}
+                <a class="btn btn--primary btn--block" href="{{ media }}/{{ sheet }}" download>
+                    PNG · полный размер
+                    {% if page.extra.png_size %}<span class="btn__note">{{ page.extra.png_size }}</span>
+                    {% else %}<span class="btn__note mock">22,4 МБ</span>{% endif %}
+                </a>
+                {% endif %}
+                {% if page.extra.tif_file %}
+                <a class="btn btn--block" href="{{ media }}/{{ page.extra.tif_file }}" download>
+                    TIF · исходный скан
+                    {% if page.extra.file_size %}<span class="btn__note">{{ page.extra.file_size }}</span>
+                    {% else %}<span class="btn__note mock">318 МБ</span>{% endif %}
+                </a>
+                {% elif page.extra.result_file_name %}
+                <a class="btn btn--block" href="{{ media }}/{{ page.extra.result_file_name }}" download>{{ page.extra.result_file_name | split(pat=".") | last | upper }} · исходный скан</a>
+                {% endif %}
+            </div>
+            <p class="license">
+                Серым набраны заглушки: размер листа, DPI и вес файлов подставятся, когда
+                генератор начнёт писать их в front-matter.
+            </p>
+            <p class="license">
+                CC BY-NC-SA 4.0 · при использовании указывайте архив и Товарищество поморского судостроения
+            </p>
+        </div>
+    </div>
+</div>

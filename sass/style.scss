@@ -400,7 +400,7 @@ img { display: block; max-width: 100%; }
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
   border-top: var(--rule);
 }
-.duo > * { padding: var(--space-6) var(--space-6) var(--space-8) 0; }
+.duo > * { padding: var(--space-6) var(--space-6) var(--space-8) 0; min-width: 0; }
 .duo > *:first-child { border-right: var(--rule-thin); padding-right: var(--space-8); }
 // Правая колонка («О проекте») иначе липнет к вертикальной линейке —
 // отбиваем её тем же отступом, что и левую, чтобы линейка стояла по центру.
@@ -631,6 +631,16 @@ img { display: block; max-width: 100%; }
   transition: max-height 120ms linear, width 120ms linear;
 }
 .stage__frame[data-zoom="fill"] img { width: 100%; max-height: none; object-fit: contain; }
+.stage__empty {
+  display: grid;
+  place-items: center;
+  min-height: 320px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-neutral-500);
+}
 
 .toolbar {
   position: absolute;
@@ -656,6 +666,9 @@ img { display: block; max-width: 100%; }
   cursor: pointer;
 }
 .toolbar > *:last-child { border-right: 0; }
+.toolbar__fit { display: grid; place-items: center; padding: var(--space-2) var(--space-3); }
+.toolbar__fit[aria-pressed="true"] { color: var(--color-accent-400); }
+.toolbar [data-zoom-level] { min-width: 62px; font-variant-numeric: tabular-nums; }
 .toolbar button:hover,
 .toolbar a:hover { background: var(--color-neutral-800); color: #fff; text-decoration: none; }
 .toolbar .toolbar__download { color: var(--color-accent-400); }
@@ -693,12 +706,18 @@ img { display: block; max-width: 100%; }
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
   border-bottom: var(--rule);
 }
-.record > * { padding: var(--space-6) var(--space-6) var(--space-8) 0; border-right: var(--rule-thin); }
-.record > *:last-child { border-right: 0; }
-@media (max-width: 860px) {
-  .record > * { border-right: 0; border-bottom: var(--rule-thin); padding-bottom: var(--space-6); }
+.record > * {
+  min-width: 0; // иначе длинное имя листа распирает колонку в соседнюю
+  overflow-wrap: anywhere;
+  padding: var(--space-6) var(--space-6) var(--space-8);
+  border-right: var(--rule-thin);
 }
-.record h1 { font-size: clamp(20px, 2.2vw, 30px); margin: var(--space-3) 0; }
+.record > *:first-child { padding-left: 0; }
+.record > *:last-child { border-right: 0; padding-right: 0; }
+@media (max-width: 860px) {
+  .record > * { border-right: 0; border-bottom: var(--rule-thin); padding: var(--space-6) 0; }
+}
+.record h1 { font-size: clamp(20px, 2.2vw, 30px); margin: var(--space-3) 0; overflow-wrap: anywhere; }
 .record h2 { font-size: 15px; margin: var(--space-3) 0; }
 
 .spec { margin: var(--space-3) 0 0; }
@@ -711,6 +730,23 @@ img { display: block; max-width: 100%; }
 }
 .spec dt { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-neutral-700); }
 .spec dd { margin: 0; font-size: 14px; overflow-wrap: anywhere; }
+// Заглушки: данные, которых генератор пока не пишет в front-matter
+.spec dd.mock { color: var(--color-neutral-600); }
+.spec__sub {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-neutral-600);
+}
+.btn__note {
+  margin-left: auto;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  opacity: 0.8;
+}
+.btn__note.mock { font-style: italic; }
 
 .files { display: flex; flex-direction: column; gap: var(--space-2); margin-top: var(--space-3); }
 .license { font-size: 12px; line-height: 1.6; color: var(--color-neutral-700); margin: var(--space-4) 0 0; }
