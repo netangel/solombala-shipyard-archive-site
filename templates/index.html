@@ -36,10 +36,21 @@
         </div>
     </div>
 
-    {# ── Избранное: чертёж недели. config.extra.featured = "Папка/лист.md" ── #}
+    {# ── Избранное: чертёж недели. config.extra.featured = "Папка/лист.md";
+       если не задано — берём первый лист с эскизом, чтобы блок не пропадал ── #}
+    {% set_global featured = false %}
     {% set featured_path = config.extra.featured | default(value="") %}
-    {% if featured_path %}
-    {% set featured = get_page(path=featured_path) %}
+    {% if featured_path %}{% set_global featured = get_page(path=featured_path) %}{% endif %}
+    {% if not featured %}
+    {% for s in section.subsections %}
+    {% set sub = get_section(path=s) %}
+    {% for sheet in sub.pages %}
+    {% if not featured and sheet.extra.thumbnail %}{% set_global featured = sheet %}{% endif %}
+    {% endfor %}
+    {% endfor %}
+    {% endif %}
+
+    {% if featured %}
     {% set f_dir = featured.extra.directory_name | default(value="") %}
     <div class="featured">
         <a class="plate plate--tall" href="{{ featured.permalink }}">
@@ -70,18 +81,34 @@
     </div>
     {% endif %}
 
-    {# ── Ещё из избранного: config.extra.picks = ["Папка/лист.md", …] ── #}
+    {# ── Ещё из избранного: config.extra.picks = ["Папка/лист.md", …];
+       без ручного списка показываем четыре следующих листа с эскизом ── #}
     {% set picks = config.extra.picks | default(value=[]) %}
-    {% if picks | length > 0 %}
+    {% set picks_n = picks | length %}
+    {% if picks_n > 0 or featured %}
     <div class="row-head">
         <h2>Ещё из избранного</h2>
-        <div class="label">выбор редактора</div>
+        <div class="label">{% if picks_n > 0 %}выбор редактора{% else %}из свежих папок{% endif %}</div>
     </div>
     <div class="cards">
+        {% if picks_n > 0 %}
         {% for p in picks %}
         {% set mini = get_page(path=p) %}
         {% include "partials/mini-card.html" %}
         {% endfor %}
+        {% else %}
+        {% set_global picked = 0 %}
+        {% for s in section.subsections %}
+        {% set sub = get_section(path=s) %}
+        {% for sheet in sub.pages %}
+        {% if picked < 4 and sheet.extra.thumbnail and sheet.permalink != featured.permalink %}
+        {% set mini = sheet %}
+        {% include "partials/mini-card.html" %}
+        {% set_global picked = picked + 1 %}
+        {% endif %}
+        {% endfor %}
+        {% endfor %}
+        {% endif %}
     </div>
     {% endif %}
 

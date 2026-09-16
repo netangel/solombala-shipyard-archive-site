@@ -372,9 +372,18 @@ img { display: block; max-width: 100%; }
   gap: var(--space-4);
   padding-bottom: var(--space-6);
 }
-.mini h3 { font-size: 15px; margin: var(--space-2) 0 var(--space-1); }
+.mini { min-width: 0; } // иначе длинное имя листа распирает колонку грида
+.mini h3 {
+  font-size: 15px;
+  margin: var(--space-2) 0 var(--space-1);
+  // title листа — это имя файла целиком; обрезаем, как .sheet__title
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .mini h3 a { color: var(--color-text); }
 .mini h3 a:hover { color: var(--color-accent-700); text-decoration: none; }
+.mini .label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .scan-strip {
   display: grid;
@@ -393,8 +402,12 @@ img { display: block; max-width: 100%; }
 }
 .duo > * { padding: var(--space-6) var(--space-6) var(--space-8) 0; }
 .duo > *:first-child { border-right: var(--rule-thin); padding-right: var(--space-8); }
+// Правая колонка («О проекте») иначе липнет к вертикальной линейке —
+// отбиваем её тем же отступом, что и левую, чтобы линейка стояла по центру.
+.duo > *:last-child { padding-left: var(--space-8); }
 @media (max-width: 760px) {
   .duo > *:first-child { border-right: 0; padding-right: 0; }
+  .duo > *:last-child { padding-left: 0; }
 }
 
 .article-row {
