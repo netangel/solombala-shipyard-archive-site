@@ -1,9 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ lang | default(value=config.default_language) }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% if page.title %}{{ page.title }} - {% endif %}Цифровой архив Соломбальской судоверфи</title>
+    <title>{% block title %}{% if page is defined and page.title %}{{ page.title }} — {% elif term is defined and term %}{{ term.name }} — {% elif section is defined and section.title and section.relative_path != "_index.md" %}{{ section.title }} — {% endif %}Цифровой архив Соломбальской судоверфи{% endblock title %}</title>
+    <meta name="description" content="{% block description %}{% if page is defined and page.description %}{{ page.description }}{% elif section is defined and section.description %}{{ section.description }}{% else %}Чертежи Соломбальской судоверфи: рабочие и прогулочные деревянные суда, оцифрованные листы 1930–1960-х годов.{% endif %}{% endblock description %}">
+
+    {# Тексты кириллические, латиница — в именах файлов; грузим оба подмножества сразу #}
+    <link rel="preload" href="{{ get_url(path='fonts/Inter-Roman-cyrillic.woff2') | safe }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{ get_url(path='fonts/Inter-Roman-latin.woff2') | safe }}" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="{{ get_url(path=config.extra.custom_css | default(value='style.css')) | safe }}">
 
     <!-- Privacy-friendly analytics by Plausible -->
     <script async src="https://plausible.dwal.in/js/pa-cPh6rnJO0oIpyLss8N2Zd.js"></script>
@@ -11,91 +17,20 @@
       window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
       plausible.init()
     </script>
-
-    <!-- Optional: Your custom CSS -->
-    {% if config.extra.custom_css %}
-    <link rel="stylesheet" href="{{ get_url(path=config.extra.custom_css) | safe }}">
-    {% endif %}
+    {% block head_extra %}{% endblock head_extra %}
 </head>
-<body class="bg-gray-100 min-h-screen">
-    <nav class="bg-white shadow-md">
-        <div class="container mx-auto px-4">
-            <div class="flex justify-between h-16 items-center">
-                <a href="{{ config.base_url }}" class="text-xl font-bold">
-                    Цифровой архив Соломбальской судоверфи
-                </a>
-            </div>
+<body>
+    {% block site_header %}{% include "partials/header.html" %}{% endblock site_header %}
 
-            <!-- Horizontal menu section -->
-            <div class="border-t border-gray-200">
-                <div class="flex justify-between items-center py-3">
-                    <ul class="flex space-x-8">
-                        <li>
-                            <a href="{{ config.base_url }}" class="text-gray-700 hover:text-blue-600 transition-colors">
-                                Основной раздел
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ get_url(path='tags') | safe }}" class="text-gray-700 hover:text-blue-600 transition-colors">
-                                Категории
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ get_url(path='about') | safe }}" class="text-gray-700 hover:text-blue-600 transition-colors">
-                                О проекте
-                            </a>
-                        </li>
-                    </ul>
-
-                    <!-- Search bar -->
-                    {% block search_bar %}
-                    <div class="relative w-1/2">
-                        <input
-                            type="text"
-                            id="search-input"
-                            placeholder="Поиск по названию, содержимому или тегам..."
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        />
-                        <div
-                            id="search-results"
-                            class="hidden absolute top-full left-0 right-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg max-h-96 overflow-y-auto z-50"
-                        ></div>
-                    </div>
-                    {% endblock search_bar %}
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <main>
-        {% block content %}{% endblock %}
+    <main id="content">
+        {% block content %}{% endblock content %}
     </main>
 
-    <footer class="bg-white shadow-md mt-8">
-        <div class="container mx-auto px-4 py-6">
-            <p class="text-left text-gray-600">
-                Лицензия:
-                <img src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png"> Creative Commons «Attribution-NonCommercial-ShareAlike» («Атрибуция-Некоммерчески-СохранениеУсловий») 4.0 Всемирная.<br>
-                Эта лицензия означает, что вы можете свободно использовать чертежи, представленные на этом сайте, перерабатывать их, исправлять и развивать и создавать производные произведения на некоммерческой основе, с условием упоминания оригинального авторства и лицензирования производных работ на аналогичных лицензионных условиях.
-                </br>
-            </p>
-            <p class="text-center text-gray-600">
-                Товарищество поморского судостроения
-            </p>
-        </div>
-    </footer>
+    {% include "partials/footer.html" %}
+
+    <script src="{{ get_url(path='js/pluralization.js') | safe }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
+    <script src="{{ get_url(path='js/search.js') | safe }}"></script>
+    {% block body_extra %}{% endblock body_extra %}
 </body>
-
-<!-- Tailwind CSS -->
-<script src="{{ get_url(path="js/tailwind.3.4.16.js") }}"></script>
-
-<!-- Pluralization utility -->
-<script src="{{ get_url(path="js/pluralization.js") }}"></script>
-
-<!-- Fuse.js for search -->
-<script src="https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js"></script>
-
-<!-- Search functionality -->
-<script src="{{ get_url(path="js/search.js") }}"></script>
-
 </html>

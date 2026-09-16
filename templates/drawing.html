@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{# Чертёж (1h): тёмный просмотрщик, метаданные в подвале.
+   Front-matter: template = "drawing.html" #}
+
+{% block site_header %}
+{% set parent = get_section(path=page.ancestors | last) %}
+<div class="viewer-bar">
+    <a href="{{ parent.permalink }}">← Папка</a>
+    <div class="viewer-bar__title">{{ page.extra.sheet_no | default(value=page.title) }}</div>
+    <div class="viewer-bar__nav">
+        {% if page.extra.sheet_index and parent.pages %}
+        <span>{{ page.extra.sheet_index }} / {{ parent.pages | length }}</span>
+        {% endif %}
+        {% if page.lower %}<a class="viewer-bar__step" href="{{ page.lower.permalink }}" title="{{ page.lower.title }}">‹</a>{% endif %}
+        {% if page.higher %}<a class="viewer-bar__step viewer-bar__step--next" href="{{ page.higher.permalink }}" title="{{ page.higher.title }}">›</a>{% endif %}
+    </div>
+</div>
+{% endblock site_header %}
+
+{% block content %}
+{% set dir = page.extra.directory_name | default(value="") %}
+{% set media = config.extra.media_url ~ "/" ~ dir %}
+{% set sheet = page.extra.png_file | default(value="") %}
+{% set parent = get_section(path=page.ancestors | last) %}
+<div class="stage">
+    <div class="stage__frame" id="stage-frame" data-zoom="fit">
+        {% if sheet %}
+        <img id="stage-image" src="{{ media }}/{{ sheet }}" alt="{{ page.title }}">
+        {% endif %}
+    </div>
+
+    <div class="toolbar">
+        <button type="button" data-zoom-out aria-label="Уменьшить">−</button>
+        <button type="button" data-zoom-level>100%</button>
+        <button type="button" data-zoom-in aria-label="Увеличить">+</button>
+        <button type="button" data-zoom-fit>вписать</button>
+        {% if sheet %}
+        <a class="toolbar__download" href="{{ media }}/{{ sheet }}" download>скачать</a>
+        {% endif %}
+    </div>
+
+    {% if page.extra.multi_page and page.extra.png_file_pages %}
+    <div class="pages" role="list" aria-label="Листы документа">
+        <a class="pages__item" role="listitem" aria-current="true" href="{{ media }}/{{ sheet }}" target="_blank" rel="noopener">
+            <img src="{{ media }}/Thumbnails/{{ page.extra.thumbnail | default(value=sheet) }}" alt="Лист 1" loading="lazy">
+            <span>Лист 1</span>
+        </a>
+        {% for extra_page in page.extra.png_file_pages %}
+        <a class="pages__item" role="listitem" href="{{ media }}/{{ extra_page }}" target="_blank" rel="noopener">
+            <img src="{{ media }}/Thumbnails/{{ extra_page }}" alt="Лист {{ loop.index + 1 }}" loading="lazy">
+            <span>Лист {{ loop.index + 1 }}</span>
+        </a>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+
+<div class="wrap">
+    <div class="record">
+        <div>
+            <div class="label">Описание листа</div>
+            <h1>{{ page.title }}</h1>
+            {% if page.content %}
+            <div style="font-size:15px">{{ page.content | safe }}</div>
+            {% elif page.description %}
+            <p>{{ page.description }}</p>
+            {% endif %}
+            {% if page.taxonomies.tags %}
+            <div class="chips" style="margin-top:var(--space-3)">
+                {% for tag in page.taxonomies.tags %}
+                <a class="chip" href="{{ get_taxonomy_url(kind='tags', name=tag) | safe }}">{{ tag }}</a>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <div>
+            <div class="label">Учётные данные</div>
+            <dl class="spec">
+                {% if page.extra.sheet_no %}
+                <div class="spec__row"><dt>Номер</dt><dd>{{ page.extra.sheet_no }}</dd></div>
+                {% endif %}
+                <div class="spec__row"><dt>Папка</dt><dd><a href="{{ parent.permalink }}">{{ parent.title }}</a></dd></div>
+                {% if page.extra.original_name %}
+                <div class="spec__row"><dt>Оригинал</dt><dd>{{ page.extra.original_name }}</dd></div>
+                {% endif %}
+                {% if page.extra.year %}
+                <div class="spec__row"><dt>Дата</dt><dd>{{ page.extra.year }}</dd></div>
+                {% endif %}
+                {% if page.extra.format %}
+                <div class="spec__row"><dt>Формат</dt><dd>{{ page.extra.format }}</dd></div>
+                {% endif %}
+                {% if page.extra.scan_year or page.extra.scan_spec %}
+                <div class="spec__row">
+                    <dt>Скан</dt>
+                    <dd>{{ page.extra.scan_spec | default(value="") }}{% if page.extra.scan_spec and page.extra.scan_year %}, {% endif %}{{ page.extra.scan_year | default(value="") }}</dd>
+                </div>
+                {% endif %}
+                <div class="spec__row">
+                    <dt>Листов</dt>
+                    <dd>{% if page.extra.multi_page %}{{ page.extra.png_file_pages | length + 1 }}{% else %}1{% endif %}</dd>
+                </div>
+            </dl>
+        </div>
+
+        <div>
+            <div class="label">Файлы и лицензия</div>
+            <div class="files">
+                {% if sheet %}
+                <a class="btn btn--primary btn--block" href="{{ media }}/{{ sheet }}" download>PNG · полный размер</a>
+                {% endif %}
+                {% if page.extra.result_file_name %}
+                <a class="btn btn--block" href="{{ media }}/{{ page.extra.result_file_name }}" download>{{ page.extra.result_file_name | split(pat=".") | last | upper }} · исходный скан</a>
+                {% endif %}
+            </div>
+            <p class="license">
+                CC BY-NC-SA 4.0 · при использовании указывайте архив и Товарищество поморского судостроения
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block body_extra %}
+<script>
+(function () {
+  var frame = document.getElementById("stage-frame");
+  var img = document.getElementById("stage-image");
+  if (!frame || !img) return;
+  var levels = [50, 75, 100, 150, 200, 300];
+  var idx = 2;
+  var readout = document.querySelector("[data-zoom-level]");
+
+  function apply() {
+    frame.dataset.zoom = "fill";
+    img.style.width = levels[idx] + "%";
+    img.style.maxHeight = "none";
+    if (readout) readout.textContent = levels[idx] + "%";
+  }
+  function fit() {
+    frame.dataset.zoom = "fit";
+    img.style.width = "100%";
+    img.style.maxHeight = "";
+    idx = 2;
+    if (readout) readout.textContent = "вписано";
+  }
+
+  document.querySelector("[data-zoom-in]").addEventListener("click", function () {
+    idx = Math.min(idx + 1, levels.length - 1); apply();
+  });
+  document.querySelector("[data-zoom-out]").addEventListener("click", function () {
+    idx = Math.max(idx - 1, 0); apply();
+  });
+  document.querySelector("[data-zoom-fit]").addEventListener("click", fit);
+  if (readout) readout.addEventListener("click", apply);
+  fit();
+
+  document.addEventListener("keydown", function (e) {
+    if (e.target.tagName === "INPUT") return;
+    var prev = document.querySelector(".viewer-bar__step:not(.viewer-bar__step--next)");
+    var next = document.querySelector(".viewer-bar__step--next");
+    if (e.key === "ArrowLeft" && prev) prev.click();
+    if (e.key === "ArrowRight" && next) next.click();
+  });
+})();
+</script>
+{% endblock body_extra %}

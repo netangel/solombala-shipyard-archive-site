@@ -1,44 +1,61 @@
-{% extends "base.html" %} {% block content %}
-<div class="container mx-auto px-4 py-8">
-    <nav class="mb-8">
-        <a href="/" class="text-blue-600 hover:text-blue-800"
-            >← Назад на главную</a
-        >
+{% extends "base.html" %}
+
+{# Категории — текстовый указатель, как в конце книги (1i) #}
+
+{% block content %}
+{# Tera 2 не умеет добавлять элемент в массив, поэтому копим буквы строкой #}
+{% set_global letters = "" %}
+{% for term in terms %}
+{% set_global letters = letters ~ (term.name | truncate(length=1, end="") | upper) ~ "|" %}
+{% endfor %}
+{% set_global sorted_letters = [] %}
+{% if terms | length > 0 %}
+{% set_global sorted_letters = letters | trim_end(pat="|") | split(pat="|") | unique | sort %}
+{% endif %}
+{% set_global tagged = 0 %}
+{% for term in terms %}{% set_global tagged = tagged + (term.pages | length) %}{% endfor %}
+
+<div class="wrap">
+    <nav class="crumbs" aria-label="Хлебные крошки">
+        <a href="{{ config.base_url }}">Архив</a> <span aria-hidden="true">/</span> <strong>Категории</strong>
     </nav>
 
-    <h1 class="text-3xl font-bold mb-8">Все категории</h1>
-
-    {# Collect all unique first characters #} {% set_global all_chars = [] %} {%
-    for term in terms %} {% set first_char = term.name | truncate(length=1,
-    end="") | upper %} {% if first_char not in all_chars %} {% set_global
-    all_chars = all_chars | concat(with=first_char) %} {% endif %} {% endfor %}
-    {# Sort characters #} {% set sorted_chars = all_chars | sort %} {# Display
-    each group #} {% for char in sorted_chars %}
-    <div class="bg-white shadow-lg rounded-lg overflow-hidden mb-6">
-        <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
-            <h2 class="text-2xl font-semibold text-gray-800">
-                Категории "{{ char }}"
-            </h2>
-        </div>
-        <div class="p-6">
-            <div class="flex flex-wrap gap-4">
-                {% for term in terms %} {% set first_char = term.name |
-                truncate(length=1, end="") | upper %} {% if first_char == char
-                %}
-                <a
-                    href="{{ term.permalink }}"
-                    class="inline-flex items-center gap-2 bg-gray-100 hover:bg-gray-200 rounded-full px-4 py-2 text-gray-700 transition-colors duration-200"
-                >
-                    <span class="font-semibold">{{ term.name }}</span>
-                    <span
-                        class="bg-gray-200 text-gray-600 text-sm rounded-full px-2 py-0.5"
-                        >{{ term.pages | length }}</span
-                    >
-                </a>
-                {% endif %} {% endfor %}
-            </div>
+    <div class="page-head" style="border-bottom:0">
+        <h1>Категории и теги</h1>
+        <p class="page-head__lede">
+            Весь словарь архива в текстовом виде: тип судна, длина корпуса, движитель, вид чертежа,
+            оснастка и цеховые материалы. Цифра — число чертежей.
+        </p>
+        <div class="alpha">
+            {% for letter in sorted_letters %}
+            <a href="#g-{{ letter | slugify }}">{{ letter }}</a>
+            {% endfor %}
+            <span style="margin-left:auto" class="label">
+                {{ terms | length }} терминов · <a href="{{ get_url(path='vedomost') | safe }}">ведомость →</a>
+            </span>
         </div>
     </div>
-    {% endfor %}
+
+    <div class="index-cols">
+        {% for letter in sorted_letters %}
+        <section class="index-group" id="g-{{ letter | slugify }}">
+            <h2>{{ letter }}</h2>
+            <p class="run">
+                {%- for term in terms -%}
+                {%- if term.name | truncate(length=1, end="") | upper == letter -%}
+                <a href="{{ term.permalink }}">{{ term.name }}</a> <span class="run__count">{{ term.pages | length }}</span>{% if not loop.last %}, {% endif %}
+                {%- endif -%}
+                {%- endfor -%}
+            </p>
+        </section>
+        {% endfor %}
+    </div>
+
+    <div class="tech-index" style="padding-bottom:var(--space-8)">
+        <div class="label">
+            Словарь ведётся вручную · {{ terms | length }} терминов ·
+            {{ tagged }} связей «чертёж — категория» · CC BY-NC-SA 4.0
+        </div>
+    </div>
 </div>
 {% endblock content %}

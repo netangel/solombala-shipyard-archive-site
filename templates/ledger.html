@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{# Ведомость категорий (1j). Content: content/vedomost.md with template = "ledger.html".
+   Оси задаются в config.toml:
+     [extra]
+     axes = [
+       { name = "Тип судна", tags = ["карбас", "шхуна зверобойная", …] },
+       { name = "Вид чертежа", tags = [...] },
+     ]
+   Термины, не попавшие ни в одну ось, уходят в «Прочее». #}
+
+{% block site_header %}{% set header_ink = true %}{% include "partials/header.html" %}{% endblock site_header %}
+
+{% block content %}
+{% set tags = get_taxonomy(kind="tags") %}
+{% set axes = config.extra.axes | default(value=[]) %}
+{% set sorted_terms = tags.items | sort(attribute="page_count") | reverse %}
+{% set_global total_sheets = 0 %}
+{% for term in tags.items %}{% set_global total_sheets = total_sheets + (term.pages | length) %}{% endfor %}
+
+<div class="wrap">
+    <div class="page-head" style="border-bottom:0">
+        <h1>{{ page.title | default(value="Словарь архива") }}</h1>
+        <div class="page-head__meta">
+            <span>{{ axes | length + 1 }} осей</span>
+            <span>{{ tags.items | length }} терминов</span>
+            <span>сортировка по числу чертежей</span>
+        </div>
+    </div>
+
+    <table class="ledger">
+        <thead>
+            <tr>
+                <th class="axis">Ось</th>
+                <th>Термин</th>
+                <th class="num">Листов</th>
+                <th class="num">Папок</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for axis in axes %}
+            {% set_global axis_rows = 0 %}
+            {% for term in sorted_terms %}
+            {% if term.name in axis.tags %}
+            {# Tera 2 не умеет добавлять элемент в массив: считаем папки через строку #}
+            {% set_global dirs = "" %}
+            {% for p in term.pages %}{% set_global dirs = dirs ~ (p.extra.directory_name | default(value="—")) ~ "|" %}{% endfor %}
+            {% set folders = dirs | trim_end(pat="|") | split(pat="|") | unique %}
+            <tr>
+                <td class="axis">{% if axis_rows == 0 %}{{ axis.name }}{% endif %}</td>
+                <td><a href="{{ term.permalink }}">{{ term.name }}</a></td>
+                <td class="num">{{ term.pages | length }}</td>
+                <td class="num">{% if term.pages | length > 0 %}{{ folders | length }}{% else %}0{% endif %}</td>
+            </tr>
+            {% set_global axis_rows = axis_rows + 1 %}
+            {% endif %}
+            {% endfor %}
+            {% endfor %}
+
+            {# Прочее — всё, что не разложено по осям #}
+            {% set_global rest_rows = 0 %}
+            {% for term in sorted_terms %}
+            {% set_global is_assigned = false %}
+            {% for axis in axes %}{% if term.name in axis.tags %}{% set_global is_assigned = true %}{% endif %}{% endfor %}
+            {% if not is_assigned %}
+            {% set_global dirs = "" %}
+            {% for p in term.pages %}{% set_global dirs = dirs ~ (p.extra.directory_name | default(value="—")) ~ "|" %}{% endfor %}
+            {% set folders = dirs | trim_end(pat="|") | split(pat="|") | unique %}
+            <tr>
+                <td class="axis">{% if rest_rows == 0 %}Прочее{% endif %}</td>
+                <td><a href="{{ term.permalink }}">{{ term.name }}</a></td>
+                <td class="num">{{ term.pages | length }}</td>
+                <td class="num">{% if term.pages | length > 0 %}{{ folders | length }}{% else %}0{% endif %}</td>
+            </tr>
+            {% set_global rest_rows = rest_rows + 1 %}
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="tech-index" style="border-top:0;padding-top:0">
+        <div class="label">
+            {{ total_sheets }} связей «чертёж — категория» ·
+            <a href="{{ get_url(path='tags') | safe }}">текстовый указатель →</a>
+        </div>
+    </div>
+</div>
+{% endblock content %}

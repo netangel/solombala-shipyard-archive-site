@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{# Разделы коллекции (1c). Content: content/razdely.md with template = "archive.html".
+   Folders are the subsections of the root section; each carries
+   extra.vessel_group ("Карбасы", "Боты и мотоботы", …). #}
+
+{% block content %}
+{# Tera 2 не умеет добавлять элемент в массив: папки берём прямо из
+   root.subsections, а список групп копим строкой и чистим через unique #}
+{% set root = get_section(path="_index.md") %}
+{% set folder_count = root.subsections | length %}
+{% set_global groups_s = "" %}
+{% set_global total_sheets = 0 %}
+{% for s in root.subsections %}
+{% set sub = get_section(path=s) %}
+{% set_global total_sheets = total_sheets + (sub.pages | length) %}
+{% set_global groups_s = groups_s ~ (sub.extra.vessel_group | default(value="Прочее")) ~ "|" %}
+{% endfor %}
+{% set_global groups = [] %}
+{% if groups_s %}{% set_global groups = groups_s | trim_end(pat="|") | split(pat="|") | unique %}{% endif %}
+
+<div class="wrap">
+    <nav class="crumbs" aria-label="Хлебные крошки">
+        <a href="{{ config.base_url }}">Архив</a> <span aria-hidden="true">/</span> <strong>Разделы</strong>
+    </nav>
+
+    <div class="page-head" style="border-bottom:0">
+        <h1>{{ page.title | default(value="Разделы коллекции") }}</h1>
+        <p class="page-head__lede">
+            {% if page.description %}{{ page.description }}{% else %}{{ folder_count }} папок, сгруппированных по типу судна и по назначению чертежа.
+            Порядковые партии сканирования — в техническом индексе внизу страницы.{% endif %}
+        </p>
+        <div class="chips" style="margin-top:var(--space-4)">
+            <span class="chip chip--on">все</span>
+            {% for grp in groups %}
+            <a class="chip" href="#{{ grp | slugify }}">{{ grp }}</a>
+            {% endfor %}
+        </div>
+    </div>
+
+    {% for grp in groups %}
+    {% set_global grp_count = 0 %}
+    {% set_global grp_sheets = 0 %}
+    {% for s in root.subsections %}
+    {% set folder = get_section(path=s) %}
+    {% if folder.extra.vessel_group | default(value="Прочее") == grp %}
+    {% set_global grp_count = grp_count + 1 %}
+    {% set_global grp_sheets = grp_sheets + (folder.pages | length) %}
+    {% endif %}
+    {% endfor %}
+
+    <section class="group" id="{{ grp | slugify }}">
+        <div class="group__head">
+            <h2>{{ grp }}</h2>
+            <div class="label">
+                {{ grp_count }} папок ·
+                <span data-pluralize="drawing" data-count="{{ grp_sheets }}" data-template="{count} {word}">{{ grp_sheets }}</span>
+            </div>
+        </div>
+
+        <div class="folders">
+            {% for s in root.subsections %}
+            {% set folder = get_section(path=s) %}
+            {% if folder.extra.vessel_group | default(value="Прочее") == grp %}
+            {% set f_dir = folder.extra.directory_name | default(value=folder.slug) %}
+            {% set cover = folder.extra.cover | default(value="") %}
+            {% set first_sheet = folder.pages | first %}
+            <a class="folder" href="{{ folder.permalink }}">
+                <span class="plate plate--wide">
+                    {% if cover %}
+                    <img src="{{ config.extra.media_url }}/{{ f_dir }}/Thumbnails/{{ cover }}" alt="{{ folder.title }}" loading="lazy">
+                    {% elif first_sheet and first_sheet.extra.thumbnail %}
+                    <img src="{{ config.extra.media_url }}/{{ f_dir }}/Thumbnails/{{ first_sheet.extra.thumbnail }}" alt="{{ folder.title }}" loading="lazy">
+                    {% endif %}
+                </span>
+                <span class="folder__title">{{ folder.title }}</span>
+                <span class="label">
+                    <span data-pluralize="drawing" data-count="{{ folder.pages | length }}" data-template="{count} {word}">{{ folder.pages | length }}</span>
+                    {%- if folder.extra.years %} · {{ folder.extra.years }}{% endif -%}
+                </span>
+            </a>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </section>
+    {% endfor %}
+
+    <section class="tech-index">
+        <div class="label">Технический индекс · партии сканирования</div>
+        <div class="chips" style="margin-top:var(--space-3)">
+            {% for s in root.subsections | sort %}
+            {% set folder = get_section(path=s) %}
+            <a class="chip" href="{{ folder.permalink }}">{{ folder.extra.directory_name | default(value=folder.slug) }}</a>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock content %}

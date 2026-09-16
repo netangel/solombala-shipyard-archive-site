@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{# Страница поиска. Content: content/search.md with template = "search.html" #}
+
+{% block content %}
+<div class="wrap search-page">
+    <nav class="crumbs" aria-label="Хлебные крошки">
+        <a href="{{ config.base_url }}">Архив</a> <span aria-hidden="true">/</span> <strong>Поиск</strong>
+    </nav>
+
+    <div class="page-head" style="border-bottom:0">
+        <h1>Поиск по архиву</h1>
+        <p class="page-head__lede">
+            По названию листа, номеру, содержимому и категориям. Поиск работает в браузере —
+            индекс загружается один раз.
+        </p>
+    </div>
+
+    <div class="search">
+        <label class="visually-hidden" for="search-page-input">Поисковый запрос</label>
+        <input
+            type="search"
+            id="search-page-input"
+            class="search__input"
+            data-search-input
+            autocomplete="off"
+            autofocus
+            placeholder="например: карбас, парусность, 1941…"
+        >
+        <div class="search__results hidden" data-search-results></div>
+    </div>
+</div>
+{% endblock content %}

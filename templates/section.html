@@ -1,58 +1,92 @@
-{% extends "base.html" %} {% block content %}
-<div class="container mx-auto px-4 py-8">
-    <nav class="mb-8">
-        <a href="/" class="text-blue-600 hover:text-blue-800"
-            >← Вернуться на главную</a
-        >
+{% extends "base.html" %}
+
+{# Папка (1e): плотная сетка листов + справка о папке сбоку #}
+
+{% block content %}
+{% set sheets = paginator.pages if paginator is defined else section.pages %}
+{% set dir = section.extra.directory_name | default(value=section.slug) %}
+
+<div class="wrap">
+    <nav class="crumbs" aria-label="Хлебные крошки">
+        <a href="{{ config.base_url }}">Архив</a>
+        <span aria-hidden="true">/</span>
+        <a href="{{ get_url(path='razdely') | safe }}">{{ section.extra.vessel_group | default(value="Разделы") }}</a>
+        <span aria-hidden="true">/</span>
+        <strong>{{ section.title }}</strong>
     </nav>
 
-    <h1 class="text-3xl font-bold mb-2">{{ section.title }}</h1>
-    {% if section.description %}
-    <p class="text-gray-600 mb-8">{{ section.description }}</p>
-    {% endif %}
+    <div class="page-head" style="border-bottom:0;padding-bottom:0">
+        <h1>{{ section.title }}</h1>
+        <div class="page-head__meta">
+            <span data-pluralize="drawing" data-count="{{ section.pages | length }}" data-template="{count} {word}">{{ section.pages | length }} чертежей</span>
+            {% if section.extra.sheet_range %}<span>{{ section.extra.sheet_range }}</span>{% endif %}
+            {% if section.extra.medium %}<span>{{ section.extra.medium }}</span>{% endif %}
+        </div>
+    </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {% for page in section.pages %}
-        <div
-            class="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
-        >
-            {% if page.extra.thumbnail %}
-            <div class="aspect-w-4 aspect-h-3">
-                <img
-                    src="{{ config.extra.media_url }}/{{ section.extra.directory_name }}/Thumbnails/{{ page.extra.thumbnail }}"
-                    alt="Thumbnail for {{ page.title }}"
-                    class="object-cover w-full h-full"
-                />
+    <div class="folder-layout">
+        <div>
+            <div class="sort-bar">
+                <span class="label">Сортировка:</span>
+                <a class="chip chip--on" href="{{ section.permalink }}">по номеру</a>
+                {% if section.extra.sorted_by_kind_url %}
+                <a class="chip" href="{{ section.extra.sorted_by_kind_url }}">по виду чертежа</a>
+                {% endif %}
+            </div>
+
+            <div class="contact-sheet">
+                {% for page in sheets %}
+                {% set sheet_page = page %}
+                {% set sheet_dir = dir %}
+                {% include "partials/sheet-thumb.html" %}
+                {% endfor %}
+            </div>
+
+            {% include "partials/pager.html" %}
+        </div>
+
+        <aside class="rail">
+            {% if section.content or section.description %}
+            <div class="rail__block">
+                <div class="label">О папке</div>
+                {% if section.content %}
+                <div style="font-size:14px;margin-top:var(--space-2)">{{ section.content | safe }}</div>
+                {% else %}
+                <p class="rail__value">{{ section.description }}</p>
+                {% endif %}
             </div>
             {% endif %}
 
-            <div class="p-6">
-                <h2 class="text-xl font-semibold mb-2">
-                    <a href="{{ page.permalink }}" class="hover:text-blue-600">
-                        {{ page.title }}
-                    </a>
-                </h2>
-
-                {% if page.extra.year %}
-                <p class="text-sm text-gray-500 mb-2">
-                    Год: {{ page.extra.year }}
-                </p>
-                {% endif %} {% if page.taxonomies.tags %}
-                <div class="mt-4">
-                    <p class="text-sm text-gray-500 mb-2">
-                        Тэги: {% for tag in page.taxonomies.tags %}
-                        <span
-                            class="inline-block bg-gray-100 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2"
-                        >
-                            {{ tag }}
-                        </span>
-                        {% endfor %}
-                    </p>
-                </div>
-                {% endif %}
+            {% if section.extra.vessel_type %}
+            <div class="rail__block">
+                <div class="label">Тип · длина</div>
+                <p class="rail__value">{{ section.extra.vessel_type }}</p>
             </div>
-        </div>
-        {% endfor %}
+            {% endif %}
+
+            {% if section.extra.years %}
+            <div class="rail__block">
+                <div class="label">Годы</div>
+                <p class="rail__value">{{ section.extra.years }}</p>
+            </div>
+            {% endif %}
+
+            {% if section.extra.tags %}
+            <div class="rail__block">
+                <div class="label">Категории</div>
+                <div class="chips" style="margin-top:var(--space-2)">
+                    {% for tag in section.extra.tags %}
+                    <a class="chip" href="{{ get_taxonomy_url(kind='tags', name=tag) | safe }}">{{ tag }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="rail__block">
+                <div class="label">Папка на диске</div>
+                <p class="rail__value" style="font-size:13px">{{ dir }}</p>
+            </div>
+        </aside>
     </div>
 </div>
 {% endblock content %}

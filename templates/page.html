@@ -1,47 +1,33 @@
-{% extends "base.html" %} {% block content %}
-<div class="container mx-auto px-4 py-8">
-    <nav class="mb-8">
-        <a href="../" class="text-blue-600 hover:text-blue-800"
-            >← Вернуться в папку</a
-        >
+{% extends "base.html" %}
+
+{# Статья / О проекте #}
+
+{% block content %}
+<div class="wrap">
+    <nav class="crumbs" aria-label="Хлебные крошки">
+        <a href="{{ config.base_url }}">Архив</a> <span aria-hidden="true">/</span> <strong>{{ page.title }}</strong>
     </nav>
 
-    <h1 class="text-3xl font-bold mb-4">{{ page.title }}</h1>
-
-    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-        {% if page.extra.png_file %}
-        <div class="max-h-[800px] overflow-auto">
-            <img
-                src="{{ config.extra.media_url }}/{{ page.extra.directory_name }}/{{ page.extra.png_file }}"
-                alt="{{ page.title }}"
-                class="w-full"
-            />
+    <div class="page-head" style="border-bottom:0">
+        <h1>{{ page.title }}</h1>
+        <div class="page-head__meta">
+            {% if page.date %}<span>{{ page.date | date(format='%d.%m.%Y') }}</span>{% endif %}
+            {% if page.reading_time %}<span>{{ page.reading_time }} мин чтения</span>{% endif %}
         </div>
-        {% endif %}
+        {% if page.description %}<p class="page-head__lede">{{ page.description }}</p>{% endif %}
+    </div>
 
-        <div class="p-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                {% if page.extra.scan_year %}
-                <div>
-                    <h3 class="font-semibold text-gray-700">Год</h3>
-                    <p>{{ page.extra.scan_year }}</p>
-                </div>
-                {% endif %}
-            </div>
+    <article class="prose">{{ page.content | safe }}</article>
 
-            {% if page.taxonomies.tags %}
-            <div class="mt-4">
-                <h3 class="font-semibold text-gray-700 mb-2">Тэги</h3>
-                {% for tag in page.taxonomies.tags %}
-                <span
-                    class="inline-block bg-gray-100 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2"
-                >
-                    {{ tag }}
-                </span>
-                {% endfor %}
-            </div>
-            {% endif %}
+    {% if page.taxonomies.tags %}
+    <div class="tech-index">
+        <div class="label">Категории</div>
+        <div class="chips" style="margin-top:var(--space-3)">
+            {% for tag in page.taxonomies.tags %}
+            <a class="chip" href="{{ get_taxonomy_url(kind='tags', name=tag) | safe }}">{{ tag }}</a>
+            {% endfor %}
         </div>
     </div>
+    {% endif %}
 </div>
 {% endblock content %}

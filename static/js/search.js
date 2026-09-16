@@ -1,5 +1,6 @@
 // Search functionality using Fuse.js
-// This script loads the search index and provides search functionality for Russian content
+// Loads the Zola fuse_json index once and binds every [data-search-input] /
+// [data-search-results] pair on the page (header field + /search page field).
 
 class ZolaSearch {
   constructor(options = {}) {
@@ -21,166 +22,130 @@ class ZolaSearch {
 
   async init() {
     if (this.initialized) return;
-
-    try {
-      const response = await fetch(this.searchIndexUrl);
-      if (!response.ok) {
-        throw new Error(`Failed to load search index: ${response.status}`);
-      }
-      const searchIndex = await response.json();
-
-      // Initialize Fuse with the search index
-      this.fuse = new Fuse(searchIndex, this.fuseOptions);
-      this.initialized = true;
-    } catch (error) {
-      console.error("Error loading search index:", error);
-      throw error;
+    const response = await fetch(this.searchIndexUrl);
+    if (!response.ok) {
+      throw new Error(`Failed to load search index: ${response.status}`);
     }
+    const searchIndex = await response.json();
+    this.fuse = new Fuse(searchIndex, this.fuseOptions);
+    this.initialized = true;
   }
 
   search(query) {
-    if (!this.initialized || !this.fuse) {
-      console.error("Search not initialized");
-      return [];
-    }
-
-    if (!query || query.trim().length === 0) {
-      return [];
-    }
-
+    if (!this.initialized || !this.fuse) return [];
+    if (!query || query.trim().length === 0) return [];
     return this.fuse.search(query);
   }
 }
 
-// Global search instance
 let searchInstance = null;
 
-// Initialize search when DOM is ready
 document.addEventListener("DOMContentLoaded", async () => {
-  const searchInput = document.getElementById("search-input");
-  const searchResults = document.getElementById("search-results");
-
-  if (!searchInput || !searchResults) {
-    return; // Search elements not present on this page
-  }
+  const inputs = Array.from(document.querySelectorAll("[data-search-input]"));
+  if (inputs.length === 0) return;
 
   try {
-    // Initialize search
     searchInstance = new ZolaSearch();
     await searchInstance.init();
-
-    // Handle search input
-    let searchTimeout;
-    searchInput.addEventListener("input", (e) => {
-      clearTimeout(searchTimeout);
-      const query = e.target.value.trim();
-
-      if (query.length === 0) {
-        searchResults.innerHTML = "";
-        searchResults.classList.add("hidden");
-        return;
-      }
-
-      // Debounce search
-      searchTimeout = setTimeout(() => {
-        performSearch(query);
-      }, 300);
-    });
-
-    // Handle click outside to close results
-    document.addEventListener("click", (e) => {
-      if (
-        !searchInput.contains(e.target) &&
-        !searchResults.contains(e.target)
-      ) {
-        searchResults.classList.add("hidden");
-      }
-    });
-
-    // Show results when clicking on search input
-    searchInput.addEventListener("focus", () => {
-      if (searchInput.value.trim().length > 0 && searchResults.innerHTML) {
-        searchResults.classList.remove("hidden");
-      }
-    });
   } catch (error) {
     console.error("Failed to initialize search:", error);
-    searchInput.placeholder = "Поиск недоступен";
-    searchInput.disabled = true;
+    inputs.forEach((input) => {
+      input.placeholder = "поиск недоступен";
+      input.disabled = true;
+    });
+    return;
   }
+
+  inputs.forEach((input) => {
+    const results =
+      input.parentElement.querySelector("[data-search-results]") ||
+      document.querySelector("[data-search-results]");
+    if (!results) return;
+
+    let timer;
+    input.addEventListener("input", (e) => {
+      clearTimeout(timer);
+      const query = e.target.value.trim();
+      if (query.length === 0) {
+        results.innerHTML = "";
+        results.classList.add("hidden");
+        return;
+      }
+      timer = setTimeout(() => render(results, query), 250);
+    });
+
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        results.classList.add("hidden");
+        input.blur();
+      }
+    });
+
+    input.addEventListener("focus", () => {
+      if (input.value.trim().length > 0 && results.innerHTML) {
+        results.classList.remove("hidden");
+      }
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!input.contains(e.target) && !results.contains(e.target)) {
+        results.classList.add("hidden");
+      }
+    });
+  });
 });
 
-function performSearch(query) {
-  const searchResults = document.getElementById("search-results");
+function render(container, query) {
+  const hits = searchInstance.search(query);
 
-  if (!searchInstance) {
+  if (hits.length === 0) {
+    container.innerHTML = `<div class="result result--empty">Ничего не найдено по запросу «${escapeHtml(query)}»</div>`;
+    container.classList.remove("hidden");
     return;
   }
 
-  const results = searchInstance.search(query);
-
-  if (results.length === 0) {
-    searchResults.innerHTML = `
-            <div class="p-4 text-gray-500 text-center">
-                Ничего не найдено по запросу "${escapeHtml(query)}"
-            </div>
-        `;
-    searchResults.classList.remove("hidden");
-    return;
-  }
-
-  // Limit to top 10 results
-  const topResults = results.slice(0, 50);
-
-  const resultHtml = topResults
-    .map((result) => {
-      const item = result.item;
-      // Zola's Fuse.js format uses 'url' field
+  container.innerHTML = hits
+    .slice(0, 50)
+    .map((hit) => {
+      const item = hit.item;
       const url = item.url || item.permalink || item.path || "#";
       const title = item.title || "Без названия";
-      const body = item.body || item.content || "";
-      const excerpt = getExcerpt(body, query);
-
+      const excerpt = getExcerpt(item.body || item.content || "", query);
       return `
-            <a href="${url}" class="block p-4 hover:bg-gray-50 border-b border-gray-200 transition-colors">
-                <h3 class="font-semibold text-gray-900 mb-1">${highlightMatch(title, query)}</h3>
-                ${excerpt ? `<p class="text-sm text-gray-600">${excerpt}</p>` : ""}
-            </a>
-        `;
+        <a href="${url}" class="result">
+          <p class="result__title">${highlightMatch(escapeHtml(title), query)}</p>
+          ${excerpt ? `<p class="result__body">${excerpt}</p>` : ""}
+        </a>
+      `;
     })
     .join("");
 
-  searchResults.innerHTML = resultHtml;
-  searchResults.classList.remove("hidden");
+  container.classList.remove("hidden");
 }
 
 function getExcerpt(text, query, maxLength = 150) {
   if (!text) return "";
 
-  const lowerText = text.toLowerCase();
-  const lowerQuery = query.toLowerCase();
-  const index = lowerText.indexOf(lowerQuery);
-
+  const index = text.toLowerCase().indexOf(query.toLowerCase());
   if (index === -1) {
     return (
       escapeHtml(text.substring(0, maxLength)) +
-      (text.length > maxLength ? "..." : "")
+      (text.length > maxLength ? "…" : "")
     );
   }
 
   const start = Math.max(0, index - 50);
   const end = Math.min(text.length, index + query.length + 100);
-
   let excerpt = text.substring(start, end);
-  if (start > 0) excerpt = "..." + excerpt;
-  if (end < text.length) excerpt = excerpt + "...";
+  if (start > 0) excerpt = "…" + excerpt;
+  if (end < text.length) excerpt = excerpt + "…";
 
   return highlightMatch(escapeHtml(excerpt), query);
 }
 
 function highlightMatch(text, query) {
   const regex = new RegExp(`(${escapeRegex(query)})`, "gi");
-  return text.replace(regex, '<mark class="bg-yellow-200">$1</mark>');
+  return text.replace(regex, "<mark>$1</mark>");
 }
 
 function escapeHtml(text) {

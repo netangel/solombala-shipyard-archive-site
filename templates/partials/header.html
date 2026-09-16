@@ -1,0 +1,21 @@
+{# Site header. Set header_ink = true before including for the ink variant (ведомость). #}
+<header class="site-header{% if header_ink %} site-header--ink{% endif %}">
+    <div class="site-header__inner">
+        <a href="{{ config.base_url }}" class="brand">
+            Цифровой архив<br>Соломбальской судоверфи
+        </a>
+
+        <ul class="nav">
+            <li><a href="{{ get_url(path='razdely') | safe }}">Разделы</a></li>
+            <li><a href="{{ get_url(path='tags') | safe }}">Категории</a></li>
+            <li><a href="{{ get_url(path='vedomost') | safe }}">Ведомость</a></li>
+            <li><a href="{{ get_url(path='about') | safe }}">О проекте</a></li>
+        </ul>
+
+        <div class="search">
+            <label class="visually-hidden" for="search-input">Поиск по архиву</label>
+            <input type="search" id="search-input" class="search__input" data-search-input autocomplete="off" placeholder="поиск по архиву">
+            <div class="search__results hidden" data-search-results></div>
+        </div>
+    </div>
+</header>
