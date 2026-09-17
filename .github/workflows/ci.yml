@@ -1,0 +1,41 @@
+name: CI
+
+# Quick sanity check that content/template changes are still valid Zola.
+# Uses the exact same Zola version as deploy.yml so template syntax that
+# doesn't parse under the pinned Tera version doesn't slip through.
+
+on:
+  pull_request:
+  push:
+    branches-ignore:
+      - main
+  workflow_dispatch:
+
+env:
+  ZOLA_VERSION: "0.23.6"
+
+concurrency:
+  group: "ci-${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: zola check & build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Zola
+        uses: taiki-e/install-action@v2
+        with:
+          tool: zola@${{ env.ZOLA_VERSION }}
+
+      - name: Validate config, templates and content (zola check)
+        run: zola check --skip-external-links
+
+      - name: Build site (zola build)
+        run: zola build

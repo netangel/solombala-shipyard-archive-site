@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 env:
-  ZOLA_VERSION: "0.19.2"
+  ZOLA_VERSION: "0.23.6"
   METADATA_REPO: "netangel/solombala-shipyard-archive-metadata"
   SCRIPTS_REPO: "netangel/archive-tovarishestvo"
 
