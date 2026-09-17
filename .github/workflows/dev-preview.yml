@@ -76,6 +76,12 @@ jobs:
           path: ./template/public
 
   deploy-preview:
+    # The github-pages environment's deployment branch policy only allows
+    # `main` and `claude/*` - a PR's merge ref (refs/pull/N/merge) never
+    # matches either, so it would always be rejected by environment
+    # protection rules. Skip the deploy attempt for pull_request events;
+    # build-preview above still validates the real-content build on PRs.
+    if: github.event_name != 'pull_request'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
