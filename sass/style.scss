@@ -597,6 +597,10 @@ img { display: block; max-width: 100%; }
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--color-bg);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .viewer-bar__nav {
   display: flex;

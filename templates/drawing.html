@@ -5,18 +5,7 @@
    Если папка не объявляет page_template, page.html сам подхватит этот же макет. #}
 
 {% block site_header %}
-{% set parent = get_section(path=page.ancestors | last) %}
-<div class="viewer-bar">
-    <a href="{{ parent.permalink }}">← Папка</a>
-    <div class="viewer-bar__title">{{ page.extra.sheet_no | default(value=page.title) }}</div>
-    <div class="viewer-bar__nav">
-        {% if page.extra.sheet_index and parent.pages %}
-        <span>{{ page.extra.sheet_index }} / {{ parent.pages | length }}</span>
-        {% endif %}
-        {% if page.lower %}<a class="viewer-bar__step" href="{{ page.lower.permalink }}" title="{{ page.lower.title }}">‹</a>{% endif %}
-        {% if page.higher %}<a class="viewer-bar__step viewer-bar__step--next" href="{{ page.higher.permalink }}" title="{{ page.higher.title }}">›</a>{% endif %}
-    </div>
-</div>
+{% include "partials/viewer-bar.html" %}
 {% endblock site_header %}
 
 {% block content %}

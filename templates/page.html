@@ -4,6 +4,11 @@
    Листы архива часто приезжают без template = "drawing.html" в front-matter —
    такие страницы попадают сюда, поэтому проверяем признаки чертежа и показываем макет 1h. #}
 
+{% block site_header %}
+{% set is_sheet = page.extra.png_file or page.extra.tif_file or page.extra.thumbnail %}
+{% if is_sheet %}{% include "partials/viewer-bar.html" %}{% else %}{% include "partials/header.html" %}{% endif %}
+{% endblock site_header %}
+
 {% block content %}
 {% set is_sheet = page.extra.png_file or page.extra.tif_file or page.extra.thumbnail %}
 {% if is_sheet %}

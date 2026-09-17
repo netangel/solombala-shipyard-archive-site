@@ -1,0 +1,28 @@
+{# Тёмная полоса просмотрщика (1h): назад в папку, номер листа, позиция и шаги.
+   Включается из drawing.html и из page.html вместо обычного site-header. #}
+{% set parent = get_section(path=page.ancestors | last) %}
+{% set total = parent.pages | length %}
+{% set png = page.extra.png_file | default(value="") %}
+{% set sheet_no = page.extra.sheet_no | default(value=png | split(pat="_") | first) %}
+{% set_global sheet_i = 0 %}
+{% set_global sheet_pos = 0 %}
+{% for p in parent.pages %}
+{% set_global sheet_i = sheet_i + 1 %}
+{% if p.permalink == page.permalink %}{% set_global sheet_pos = sheet_i %}{% endif %}
+{% endfor %}
+<div class="viewer-bar">
+    <a href="{{ parent.permalink }}">← Папка</a>
+    <div class="viewer-bar__title">
+        {%- if sheet_no %}{{ sheet_no }} · {% endif -%}
+        {{ page.title }}
+    </div>
+    <div class="viewer-bar__nav">
+        {% if page.extra.sheet_index %}
+        <span>{{ page.extra.sheet_index }} / {{ total }}</span>
+        {% elif sheet_pos > 0 %}
+        <span>{{ sheet_pos }} / {{ total }}</span>
+        {% endif %}
+        {% if page.lower %}<a class="viewer-bar__step" href="{{ page.lower.permalink }}" title="{{ page.lower.title }}">‹</a>{% endif %}
+        {% if page.higher %}<a class="viewer-bar__step viewer-bar__step--next" href="{{ page.higher.permalink }}" title="{{ page.higher.title }}">›</a>{% endif %}
+    </div>
+</div>
