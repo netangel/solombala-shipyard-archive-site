@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% if page.title %}{{ page.title }} - {% endif %}Цифровой архив Соломбальской судоверфи</title>
+    <title>{% if page is defined and page.title %}{{ page.title }} - {% endif %}Цифровой архив Соломбальской судоверфи</title>
 
     <!-- Privacy-friendly analytics by Plausible -->
     <script async src="https://plausible.dwal.in/js/pa-cPh6rnJO0oIpyLss8N2Zd.js"></script>

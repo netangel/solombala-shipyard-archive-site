@@ -11,7 +11,7 @@
     {# Collect all unique first characters #} {% set_global all_chars = [] %} {%
     for term in terms %} {% set first_char = term.name | truncate(length=1,
     end="") | upper %} {% if first_char not in all_chars %} {% set_global
-    all_chars = all_chars | concat(with=first_char) %} {% endif %} {% endfor %}
+    all_chars = [...all_chars, first_char] %} {% endif %} {% endfor %}
     {# Sort characters #} {% set sorted_chars = all_chars | sort %} {# Display
     each group #} {% for char in sorted_chars %}
     <div class="bg-white shadow-lg rounded-lg overflow-hidden mb-6">
