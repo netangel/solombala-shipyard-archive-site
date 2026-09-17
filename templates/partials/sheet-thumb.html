@@ -1,0 +1,13 @@
+{# Contact-sheet cell (1e). Call with: set sheet_page = page, optional set sheet_dir = section.extra.directory_name #}
+{% set s_dir = sheet_dir | default(value=sheet_page.extra.directory_name | default(value="")) %}
+<a class="sheet" href="{{ sheet_page.permalink }}" title="{{ sheet_page.title }}">
+    {% if sheet_page.extra.thumbnail %}
+    <span class="plate">
+        <img src="{{ config.extra.media_url }}/{{ s_dir }}/Thumbnails/{{ sheet_page.extra.thumbnail }}" alt="{{ sheet_page.title }}" loading="lazy">
+    </span>
+    {% else %}
+    <span class="plate plate--empty">без эскиза</span>
+    {% endif %}
+    <span class="sheet__num">{{ sheet_page.extra.sheet_no | default(value=sheet_page.title) }}</span>
+    {% if sheet_page.extra.sheet_no %}<span class="sheet__title">{{ sheet_page.title }}</span>{% endif %}
+</a>

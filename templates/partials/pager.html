@@ -1,0 +1,22 @@
+{# Pager for paginated sections and taxonomy terms. Requires `paginator`. #}
+{% if paginator is defined and paginator.number_pagers > 1 %}
+<nav class="pager" aria-label="Постраничная навигация">
+    {% if paginator.previous %}
+    <a class="btn" href="{{ paginator.previous | safe }}">← Назад</a>
+    {% endif %}
+
+    {% for pager in range(start=1, end=paginator.number_pagers + 1) %}
+    {% if pager == paginator.current_index %}
+    <span class="pager__num" aria-current="page">{{ pager }}</span>
+    {% else %}
+    <a class="pager__num" href="{{ paginator.base_url | safe }}{% if pager > 1 %}{{ pager }}/{% endif %}">{{ pager }}</a>
+    {% endif %}
+    {% endfor %}
+
+    {% if paginator.next %}
+    <a class="btn" href="{{ paginator.next | safe }}">Вперёд →</a>
+    {% endif %}
+
+    <span class="pager__state label">Страница {{ paginator.current_index }} из {{ paginator.number_pagers }}</span>
+</nav>
+{% endif %}

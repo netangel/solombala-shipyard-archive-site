@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{# Чертёж (1h): тёмный просмотрщик, метаданные в подвале.
+   Front-matter: template = "drawing.html".
+   Если папка не объявляет page_template, page.html сам подхватит этот же макет. #}
+
+{% block site_header %}
+{% include "partials/viewer-bar.html" %}
+{% endblock site_header %}
+
+{% block content %}
+{% include "partials/drawing-body.html" %}
+{% endblock content %}
+
+{% block body_extra %}
+{% include "partials/drawing-script.html" %}
+{% endblock body_extra %}

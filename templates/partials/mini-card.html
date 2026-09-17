@@ -1,0 +1,14 @@
+{# Small card with thumbnail + caption (1a). Call with: set mini = page #}
+{% set m_dir = mini.extra.directory_name | default(value="") %}
+<div class="mini">
+    <a class="plate plate--strip" href="{{ mini.permalink }}">
+        {% if mini.extra.thumbnail %}
+        <img src="{{ config.extra.media_url }}/{{ m_dir }}/Thumbnails/{{ mini.extra.thumbnail }}" alt="{{ mini.title }}" loading="lazy">
+        {% endif %}
+    </a>
+    <h3><a href="{{ mini.permalink }}">{{ mini.title }}</a></h3>
+    <div class="label">
+        {%- if mini.extra.sheet_no %}{{ mini.extra.sheet_no }} · {% endif -%}
+        {%- if mini.extra.year %}{{ mini.extra.year }}{% endif -%}
+    </div>
+</div>

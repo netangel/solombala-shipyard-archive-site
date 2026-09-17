@@ -1,44 +1,33 @@
-{% extends "base.html" %} {% block content %}
-<div class="container mx-auto px-4 py-8">
-    <nav class="mb-8">
-        <a href="/tags" class="text-blue-600 hover:text-blue-800"
-            >← Обратно к списку категорий</a
-        >
+{% extends "base.html" %}
+
+{# Одна категория — выборка чертежей контактным листом #}
+
+{% block content %}
+{% set sheets = paginator.pages if paginator is defined else term.pages %}
+
+<div class="wrap">
+    <nav class="crumbs" aria-label="Хлебные крошки">
+        <a href="{{ config.base_url }}">Архив</a>
+        <span aria-hidden="true">/</span>
+        <a href="{{ get_url(path='tags') | safe }}">Категории</a>
+        <span aria-hidden="true">/</span>
+        <strong>{{ term.name }}</strong>
     </nav>
 
-    <h1 class="text-3xl font-bold mb-2">Категории: {{ term.name }}</h1>
-    <p class="text-gray-600 mb-8">{{ term.pages | length }} чертежей</p>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {% for page in term.pages %}
-        <div
-            class="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
-        >
-            {% if page.extra.thumbnail %}
-            <div class="aspect-w-4 aspect-h-3">
-                <img
-                    src="{{ config.extra.media_url }}/{{ page.extra.directory_name }}/thumbnails/{{ page.extra.thumbnail }}"
-                    alt="Thumbnail for {{ page.title }}"
-                    class="object-cover w-full h-full"
-                />
-            </div>
-            {% endif %}
-
-            <div class="p-6">
-                <h2 class="text-xl font-semibold mb-2">
-                    <a href="{{ page.permalink }}" class="hover:text-blue-600">
-                        {{ page.title }}
-                    </a>
-                </h2>
-
-                {% if page.extra.year %}
-                <p class="text-sm text-gray-500 mb-2">
-                    Год: {{ page.extra.year }}
-                </p>
-                {% endif %}
-            </div>
+    <div class="page-head">
+        <h1>{{ term.name }}</h1>
+        <div class="page-head__meta">
+            <span data-pluralize="drawing" data-count="{{ term.pages | length }}" data-template="{count} {word}">{{ term.pages | length }} чертежей</span>
         </div>
+    </div>
+
+    <div class="contact-sheet" style="margin-top:var(--space-6)">
+        {% for page in sheets %}
+        {% set sheet_page = page %}
+        {% include "partials/sheet-thumb.html" %}
         {% endfor %}
     </div>
+
+    {% include "partials/pager.html" %}
 </div>
 {% endblock content %}

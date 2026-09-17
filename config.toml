@@ -26,4 +26,45 @@ index_format = "fuse_json"
 
 [extra]
 # Put all your custom variables here
-media_url = "/media"
+# ВРЕМЕННО: абсолютный адрес, пока медиа не лежат рядом с сайтом.
+# Вернуть на "/media", когда файлы переедут.
+media_url = "https://archive.seapractic.ru/media"
+
+# Скомпилированный Sass (sass/style.scss → /style.css)
+custom_css = "style.css"
+
+# Инвентарная строка на главной: последняя ячейка — не счётчик, а факт
+hull_range = "6–20 м"
+
+# Ссылка на страницу поддержки. Раскомментировать, когда появится —
+# без неё кнопка «Помочь архиву» на главной не выводится.
+# support_url = "https://seapractic.ru/podderzhat-arhiv/"
+
+# Чертёж недели: путь к листу от content/, например
+# featured = "ShlyupkaRabochaya51-100/ShR_51_ShlyupkaRabochaya_3_5metra_Zakladka_1963.md"
+# Пока не задан — главная сама берёт первый лист с эскизом.
+
+# Ещё из избранного: 3–6 листов, выбор редактора. Пока не задан —
+# главная показывает четыре следующих листа с эскизами.
+# picks = ["Папка/лист.md"]
+
+# Чтение об архиве · seapractic.ru
+[[extra.articles]]
+date = "06.04.25"
+title = "Рабочая шлюпка — архив Соломбальской судоверфи"
+url = "https://seapractic.ru/2025/04/06/rabochaya-shlyupka-arhiv-solombalskoj-sudoverfi/"
+
+[[extra.articles]]
+date = "25.02.25"
+title = "Руль Китчена"
+url = "https://seapractic.ru/2025/02/25/czifrovoj-arhiv-solombalskoj-sudoverfi-rul-kitchena/"
+
+[[extra.articles]]
+date = "29.02.24"
+title = "Дрифтер-бот — находка в архиве"
+url = "https://seapractic.ru/2024/02/29/drifter-bot-czifrovoj-arhiv-solombalskoj-sudoverfi/"
+
+[[extra.articles]]
+date = "18.01.24"
+title = "Изотермический плашкоут, 1957"
+url = "https://seapractic.ru/2024/01/18/czifrovoj-arhiv-solombalskoj-sudoverfi-izotermicheskij-plashkout/"
