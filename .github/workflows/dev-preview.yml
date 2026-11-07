@@ -1,27 +1,37 @@
 name: Build Dev Preview with Real Data
 
+# Builds the site from the production metadata (Gitea) and publishes it to
+# GitHub Pages. Images load from the public archive through extra.media_url.
+#
+# Publishes on pushes to main and claude/**, and on manual runs from those
+# branches. Other branches are refused by the github-pages environment policy.
+# Pull requests only validate the build.
+#
+# To preview unmerged metadata, start a manual run and set metadata_ref.
+
 on:
   pull_request:
     branches:
       - main
   push:
     branches:
+      - main
       - 'claude/**'
   workflow_dispatch:
+    inputs:
+      metadata_ref:
+        description: "Metadata branch to build from"
+        required: true
+        default: "main"
 
 env:
-  ZOLA_VERSION: "0.23.6"
-  METADATA_REPO: "netangel/solombala-shipyard-archive-metadata"
+  METADATA_REPO_URL: "https://git.dwal.in/solombala-archive/metadata.git"
   SCRIPTS_REPO: "netangel/archive-tovarishestvo"
 
 permissions:
   contents: read
   pages: write
   id-token: write
-
-concurrency:
-  group: "pages-preview-${{ github.ref }}"
-  cancel-in-progress: false
 
 jobs:
   build-preview:
@@ -33,11 +43,10 @@ jobs:
         with:
           path: template
 
-      - name: Checkout JSON Metadata Repository
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ env.METADATA_REPO }}
-          path: source
+      - name: Clone JSON Metadata Repository
+        env:
+          METADATA_REF: ${{ inputs.metadata_ref || 'main' }}
+        run: git clone --depth 1 --branch "$METADATA_REF" "$METADATA_REPO_URL" source
 
       - name: Checkout PowerShell Scripts
         uses: actions/checkout@v4
@@ -52,8 +61,10 @@ jobs:
 
       - name: Install Zola
         run: |
-          curl -L "https://github.com/getzola/zola/releases/download/v${ZOLA_VERSION}/zola-v${ZOLA_VERSION}-x86_64-unknown-linux-gnu.tar.gz" | tar xz
+          ZOLA_VERSION="$(tr -d '[:space:]' < template/.zola-version)"
+          curl -fsSL "https://github.com/getzola/zola/releases/download/v${ZOLA_VERSION}/zola-v${ZOLA_VERSION}-x86_64-unknown-linux-gnu.tar.gz" | tar xz
           sudo mv zola /usr/local/bin
+          zola --version
 
       - name: Convert JSON to Zola Content
         shell: pwsh
@@ -82,6 +93,10 @@ jobs:
     # protection rules. Skip the deploy attempt for pull_request events;
     # build-preview above still validates the real-content build on PRs.
     if: github.event_name != 'pull_request'
+    # All runs publish to one Pages site, so deploy them one at a time.
+    concurrency:
+      group: "pages"
+      cancel-in-progress: false
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
