@@ -7,15 +7,15 @@
 Этот проект представляет собой цифровой архив Соломбальской судоверфи, сохраняющий исторические материалы и делающий их доступными онлайн.
 
 **Версии сайта:**
-- **Продакшн**: [archive-v2.seapractic.ru](https://archive-v2.seapractic.ru) - основная версия с пользовательским доменом
-- **Dev**: [netangel.github.io/solombala-shipyard-archive-site](https://netangel.github.io/solombala-shipyard-archive-site) - версия для разработки на GitHub Pages
+- **Продакшн**: [archive.seapractic.ru](https://archive.seapractic.ru) - основная версия
+- **Dev**: [netangel.github.io/solombala-shipyard-archive-site](https://netangel.github.io/solombala-shipyard-archive-site) - предварительный просмотр на GitHub Pages
 
 ## Технологии
 
 - **Генератор статических сайтов**: [Zola](https://www.getzola.org/) - быстрый генератор статических сайтов на Rust
 - **Шаблонизатор**: Tera
-- **Развертывание**: GitHub Pages через GitHub Actions
-- **Хостинг**: GitHub Pages с пользовательским доменом
+- **Продакшн**: сборка в Gitea Actions репозитория `metadata`, хостинг в S3 (Garage)
+- **Предварительный просмотр**: GitHub Pages через GitHub Actions
 
 ## Структура проекта
 
@@ -33,7 +33,7 @@
 
 ### Предварительные требования
 
-- Установленный [Zola](https://www.getzola.org/documentation/getting-started/installation/)
+- Установленный [Zola](https://www.getzola.org/documentation/getting-started/installation/) версии, указанной в файле `.zola-version`
 
 ### Локальная разработка
 
@@ -72,11 +72,13 @@ zola check
 
 ## Развертывание
 
-Сайт автоматически развертывается на GitHub Pages при отправке изменений в основную ветку. Развертывание выполняется через GitHub Actions (см. `.github/workflows/zola.yml`).
+**Продакшн** собирается в Gitea Actions репозитория `metadata` при обновлении его ветки `main` или при ручном запуске. Изменения в этом репозитории сами по себе продакшн не обновляют: они попадут на сайт при следующей сборке.
 
-**Доступные версии:**
-- **GitHub Pages (dev)**: [https://netangel.github.io/solombala-shipyard-archive-site](https://netangel.github.io/solombala-shipyard-archive-site)
-- **Продакшн**: [https://archive-v2.seapractic.ru](https://archive-v2.seapractic.ru) (с пользовательским доменом)
+**Предварительный просмотр** собирается из тех же метаданных и публикуется на GitHub Pages при отправке изменений в `main` или `claude/**` (см. `.github/workflows/dev-preview.yml`). Изображения загружаются с продакшн-адреса. Чтобы проверить метаданные до слияния, запустите этот workflow вручную и укажите ветку в параметре `metadata_ref`.
+
+### Версия Zola
+
+Версия задаётся только в файле `.zola-version`. Её используют проверки, предварительный просмотр и продакшн-сборка, поэтому шаблоны и версия Zola меняются в одном коммите.
 
 ## Управление содержимым
 

@@ -12,10 +12,11 @@ This is a static website built with [Zola](https://www.getzola.org/), a fast sta
 
 ## Technology Stack
 
-- **Static Site Generator**: Zola
+- **Static Site Generator**: Zola, version set in `.zola-version`
 - **Templating**: Tera
-- **Deployment**: GitHub Pages via GitHub Actions
-- **Base URL**: https://archive-v2.seapractic.ru
+- **Production**: built by Gitea Actions in the `metadata` repository, hosted on S3 (Garage)
+- **Preview**: GitHub Pages via `.github/workflows/dev-preview.yml`
+- **Base URL**: https://archive.seapractic.ru
 
 ## Key Features
 
@@ -28,7 +29,7 @@ This is a static website built with [Zola](https://www.getzola.org/), a fast sta
 
 1. **Local Development**: Use `zola serve` to run a local development server
 2. **Building**: Use `zola build` to generate the static site
-3. **Deployment**: Automated via GitHub Actions when pushing to the main branch
+3. **Preview**: Pushing to `main` or `claude/**` publishes a preview with real metadata. Production updates only on a `metadata` deploy
 
 ## Useful Commands
 
