@@ -109,7 +109,11 @@ function render(container, query) {
     .map((hit) => {
       const item = hit.item;
       const url = item.url || item.permalink || item.path || "#";
-      const title = item.title || "Без названия";
+      // Drawing pages are named by a 32-character file hash; others keep their title.
+      const isDrawing = /\/[0-9a-f]{32}\/?$/i.test(url);
+      const title =
+        (isDrawing && item.title ? formatDrawingName(item.title) : item.title) ||
+        "Без названия";
       const excerpt = getExcerpt(item.body || item.content || "", query);
       return `
         <a href="${url}" class="result">

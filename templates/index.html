@@ -55,12 +55,12 @@
     <div class="featured">
         <a class="plate plate--tall" href="{{ featured.permalink }}">
             {% if featured.extra.thumbnail %}
-            <img src="{{ config.extra.media_url }}/{{ f_dir }}/Thumbnails/{{ featured.extra.thumbnail }}" alt="{{ featured.title }}">
+            <img src="{{ config.extra.media_url }}/{{ f_dir }}/Thumbnails/{{ featured.extra.thumbnail }}" alt="{{ featured.title }}" data-drawing-name="alt">
             {% endif %}
         </a>
         <div class="featured__body">
             <div class="label">Избранное · чертёж недели</div>
-            <h2>{{ featured.title }}</h2>
+            <h2 data-drawing-name>{{ featured.title }}</h2>
             {% if featured.description %}<p>{{ featured.description }}</p>{% endif %}
             {% if featured.taxonomies.tags %}
             <div class="chips">
@@ -125,8 +125,8 @@
         {% for sheet in sub.pages %}
         {% if shown < 8 and sheet.extra.thumbnail %}
         {% set r_dir = sheet.extra.directory_name | default(value="") %}
-        <a class="plate plate--strip" href="{{ sheet.permalink }}" title="{{ sheet.title }}">
-            <img src="{{ config.extra.media_url }}/{{ r_dir }}/Thumbnails/{{ sheet.extra.thumbnail }}" alt="{{ sheet.title }}" loading="lazy">
+        <a class="plate plate--strip" href="{{ sheet.permalink }}" title="{{ sheet.title }}" data-drawing-name="title">
+            <img src="{{ config.extra.media_url }}/{{ r_dir }}/Thumbnails/{{ sheet.extra.thumbnail }}" alt="{{ sheet.title }}" data-drawing-name="alt" loading="lazy">
         </a>
         {% set_global shown = shown + 1 %}
         {% endif %}

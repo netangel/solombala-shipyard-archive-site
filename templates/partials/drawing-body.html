@@ -9,14 +9,13 @@
 {% set sheet = page.extra.png_file | default(value="") %}
 {% set thumb = page.extra.thumbnail | default(value="") %}
 {% set parent = get_section(path=page.ancestors | last) %}
-{% set sheet_no = page.extra.sheet_no | default(value=sheet | split(pat="_") | first) %}
 
 <div class="stage">
     <div class="stage__frame" id="stage-frame" data-zoom="fit">
         {% if sheet %}
-        <img id="stage-image" src="{{ media }}/{{ sheet }}" alt="{{ page.title }}">
+        <img id="stage-image" src="{{ media }}/{{ sheet }}" alt="{{ page.title }}" data-drawing-name="alt">
         {% elif thumb %}
-        <img id="stage-image" src="{{ media }}/Thumbnails/{{ thumb }}" alt="{{ page.title }}">
+        <img id="stage-image" src="{{ media }}/Thumbnails/{{ thumb }}" alt="{{ page.title }}" data-drawing-name="alt">
         {% else %}
         <div class="stage__empty">скан ещё не выложен</div>
         {% endif %}
@@ -61,7 +60,7 @@
     <div class="record">
         <div>
             <div class="label">Описание листа</div>
-            <h1>{{ page.title }}</h1>
+            <h1 data-drawing-name>{{ page.title }}</h1>
             {% if page.content %}
             <div style="font-size:15px">{{ page.content | safe }}</div>
             {% elif page.description %}
@@ -79,8 +78,10 @@
         <div>
             <div class="label">Учётные данные</div>
             <dl class="spec">
-                {% if sheet_no %}
-                <div class="spec__row"><dt>Номер</dt><dd>{{ sheet_no }}</dd></div>
+                {% if page.extra.sheet_no %}
+                <div class="spec__row"><dt>Номер</dt><dd>{{ page.extra.sheet_no }}</dd></div>
+                {% else %}
+                <div class="spec__row"><dt>Номер</dt><dd data-drawing-name="number">{{ page.title }}</dd></div>
                 {% endif %}
                 <div class="spec__row">
                     <dt>Папка</dt>
@@ -97,6 +98,7 @@
                     <dt>Дата</dt>
                     {% if page.extra.date %}<dd>{{ page.extra.date }}</dd>
                     {% elif page.extra.year %}<dd>{{ page.extra.year }}</dd>
+                    {% elif page.extra.scan_year %}<dd>{{ page.extra.scan_year }}</dd>
                     {% else %}<dd class="mock">1963 · по описи папки</dd>{% endif %}
                 </div>
                 <div class="spec__row">
