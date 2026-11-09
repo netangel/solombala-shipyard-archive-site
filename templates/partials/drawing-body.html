@@ -9,7 +9,7 @@
 {% set sheet = page.extra.png_file | default(value="") %}
 {% set thumb = page.extra.thumbnail | default(value="") %}
 {% set parent = get_section(path=page.ancestors | last) %}
-{% set sheet_no = page.extra.sheet_no | default(value=sheet | split(pat="_") | first) %}
+{% set sheet_no = page.extra.sheet_no | default(value="") %}
 
 <div class="stage">
     <div class="stage__frame" id="stage-frame" data-zoom="fit">
@@ -97,6 +97,7 @@
                     <dt>Дата</dt>
                     {% if page.extra.date %}<dd>{{ page.extra.date }}</dd>
                     {% elif page.extra.year %}<dd>{{ page.extra.year }}</dd>
+                    {% elif page.extra.scan_year %}<dd>{{ page.extra.scan_year }}</dd>
                     {% else %}<dd class="mock">1963 · по описи папки</dd>{% endif %}
                 </div>
                 <div class="spec__row">

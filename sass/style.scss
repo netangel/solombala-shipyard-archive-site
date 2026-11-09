@@ -376,10 +376,7 @@ img { display: block; max-width: 100%; }
 .mini h3 {
   font-size: 15px;
   margin: var(--space-2) 0 var(--space-1);
-  // title листа — это имя файла целиком; обрезаем, как .sheet__title
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere; // редкие очень длинные слова не должны распирать колонку
 }
 .mini h3 a { color: var(--color-text); }
 .mini h3 a:hover { color: var(--color-accent-700); text-decoration: none; }
@@ -554,19 +551,14 @@ img { display: block; max-width: 100%; }
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-neutral-700);
-  // без extra.sheet_no сюда попадает имя файла целиком — обрезаем, как .sheet__title
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere; // без extra.sheet_no здесь показывается название листа
 }
 .sheet__title {
   display: block;
   font-size: 12px;
   line-height: 1.3;
   color: var(--color-neutral-800);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 .sheet:hover .sheet__num { color: var(--color-accent-700); }
 

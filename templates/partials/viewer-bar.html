@@ -2,8 +2,7 @@
    Включается из drawing.html и из page.html вместо обычного site-header. #}
 {% set parent = get_section(path=page.ancestors | last) %}
 {% set total = parent.pages | length %}
-{% set png = page.extra.png_file | default(value="") %}
-{% set sheet_no = page.extra.sheet_no | default(value=png | split(pat="_") | first) %}
+{% set sheet_no = page.extra.sheet_no | default(value="") %}
 {% set_global sheet_i = 0 %}
 {% set_global sheet_pos = 0 %}
 {% for p in parent.pages %}

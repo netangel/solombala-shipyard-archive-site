@@ -9,6 +9,6 @@
     <h3><a href="{{ mini.permalink }}">{{ mini.title }}</a></h3>
     <div class="label">
         {%- if mini.extra.sheet_no %}{{ mini.extra.sheet_no }} · {% endif -%}
-        {%- if mini.extra.year %}{{ mini.extra.year }}{% endif -%}
+        {%- if mini.extra.year %}{{ mini.extra.year }}{% elif mini.extra.scan_year %}{{ mini.extra.scan_year }}{% endif -%}
     </div>
 </div>
