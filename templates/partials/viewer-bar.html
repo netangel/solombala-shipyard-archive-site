@@ -2,6 +2,7 @@
    Включается из drawing.html и из page.html вместо обычного site-header. #}
 {% set parent = get_section(path=page.ancestors | last) %}
 {% set total = parent.pages | length %}
+{% set sheet_no = page.extra.sheet_no | default(value="") %}
 {% set_global sheet_i = 0 %}
 {% set_global sheet_pos = 0 %}
 {% for p in parent.pages %}
@@ -11,8 +12,8 @@
 <div class="viewer-bar">
     <a href="{{ parent.permalink }}">← Папка</a>
     <div class="viewer-bar__title">
-        {%- if page.extra.sheet_no %}{{ page.extra.sheet_no }} · <span data-drawing-name>{{ page.title }}</span>
-        {%- else %}<span data-drawing-name="label">{{ page.title }}</span>{% endif -%}
+        {%- if sheet_no %}{{ sheet_no }} · {% endif -%}
+        {{ page.title }}
     </div>
     <div class="viewer-bar__nav">
         {% if page.extra.sheet_index %}
@@ -20,7 +21,7 @@
         {% elif sheet_pos > 0 %}
         <span>{{ sheet_pos }} / {{ total }}</span>
         {% endif %}
-        {% if page.lower %}<a class="viewer-bar__step" href="{{ page.lower.permalink }}" title="{{ page.lower.title }}" data-drawing-name="title">‹</a>{% endif %}
-        {% if page.higher %}<a class="viewer-bar__step viewer-bar__step--next" href="{{ page.higher.permalink }}" title="{{ page.higher.title }}" data-drawing-name="title">›</a>{% endif %}
+        {% if page.lower %}<a class="viewer-bar__step" href="{{ page.lower.permalink }}" title="{{ page.lower.title }}">‹</a>{% endif %}
+        {% if page.higher %}<a class="viewer-bar__step viewer-bar__step--next" href="{{ page.higher.permalink }}" title="{{ page.higher.title }}">›</a>{% endif %}
     </div>
 </div>
