@@ -19,7 +19,7 @@ generate_feeds = false
 taxonomies = [
     {name = "tags", feed = true},
     # Основной раздел чертежа (MainCategory в метаданных), страницы /razdely/
-    {name = "razdely", paginate_by = 60}
+    {name = "razdely"}
 ]
 
 [search]

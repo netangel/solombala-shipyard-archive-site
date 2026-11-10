@@ -1,0 +1,31 @@
+{# Строки ведомости для одного раздела. Требует `tags`, `rz_name`, `rz_link`.
+   Пустой `rz_name` — чертежи без раздела.
+   Tera 2 не умеет массивы: записи для сортировки копим строкой
+   «(100000 − листов)§термин§ссылка§папок», разделитель записей «¶». #}
+{% set_global keys_s = "" %}
+{% for term in tags.items %}
+{% set_global n = 0 %}
+{% set_global dirs = "|" %}
+{% set_global nd = 0 %}
+{% for p in term.pages %}
+{% set page_rz = p.taxonomies.razdely | default(value=[]) %}
+{% if (rz_name and rz_name in page_rz) or (not rz_name and page_rz | length == 0) %}
+{% set_global n = n + 1 %}
+{% set d = p.extra.directory_name | default(value="—") %}
+{% if ("|" ~ d ~ "|") not in dirs %}{% set_global dirs = dirs ~ d ~ "|" %}{% set_global nd = nd + 1 %}{% endif %}
+{% endif %}
+{% endfor %}
+{% if n > 0 %}{% set_global keys_s = keys_s ~ (100000 - n) ~ "§" ~ term.name ~ "§" ~ term.permalink ~ "§" ~ nd ~ "¶" %}{% endif %}
+{% endfor %}
+
+{% if keys_s %}
+{% for key in keys_s | trim_end(pat="¶") | split(pat="¶") | sort %}
+{% set parts = key | split(pat="§") %}
+<tr>
+    <td class="axis">{% if loop.first %}{% if rz_name %}<a href="{{ rz_link | safe }}">{{ rz_name }}</a>{% else %}Без раздела{% endif %}{% endif %}</td>
+    <td><a href="{{ parts[2] | safe }}">{{ parts[1] }}</a></td>
+    <td class="num">{{ 100000 - (parts[0] | int) }}</td>
+    <td class="num">{{ parts[3] }}</td>
+</tr>
+{% endfor %}
+{% endif %}

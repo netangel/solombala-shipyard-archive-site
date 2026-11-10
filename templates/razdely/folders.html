@@ -1,0 +1,66 @@
+{# Папки раздела. Требует `term`, `limit` (0 — все папки) и `show_title` (заголовок-ссылка на раздел).
+   Папки — те, где есть чертежи раздела; порядок — по числу таких чертежей, по убыванию.
+   Число на карточке — чертежи раздела в этой папке, обложка — первый такой чертёж с эскизом.
+
+   Tera 2 не умеет массивы и словари: уникальные папки копим строкой «|a|b|»,
+   строки для сортировки — «(100000 − число)§папка§эскиз», записи разделены «¶». #}
+{% set_global dirs_s = "|" %}
+{% for p in term.pages %}
+{% set d = p.extra.directory_name | default(value="") %}
+{% if d and ("|" ~ d ~ "|") not in dirs_s %}{% set_global dirs_s = dirs_s ~ d ~ "|" %}{% endif %}
+{% endfor %}
+
+{% set_global keys_s = "" %}
+{% set_global folder_total = 0 %}
+{% for d in dirs_s | split(pat="|") %}
+{% if d %}
+{% set_global folder_total = folder_total + 1 %}
+{% set_global n = 0 %}
+{% set_global thumb = "" %}
+{% for p in term.pages %}
+{% if p.extra.directory_name == d %}
+{% set_global n = n + 1 %}
+{% if not thumb and p.extra.thumbnail %}{% set_global thumb = p.extra.thumbnail %}{% endif %}
+{% endif %}
+{% endfor %}
+{% set_global keys_s = keys_s ~ (100000 - n) ~ "§" ~ d ~ "§" ~ thumb ~ "¶" %}
+{% endif %}
+{% endfor %}
+{% set keys = keys_s | trim_end(pat="¶") | split(pat="¶") | sort %}
+
+<div class="group__head">
+    {% if show_title %}<h2><a href="{{ term.permalink | safe }}">{{ term.name }}</a></h2>{% endif %}
+    <div class="label">
+        <span data-pluralize="drawing" data-count="{{ term.page_count }}" data-template="{count} {word}">{{ term.page_count }} чертежей</span>
+        <span data-pluralize="folder_in" data-count="{{ folder_total }}" data-template="в {count} {word}">в {{ folder_total }} папках</span>
+    </div>
+</div>
+
+<div class="folders">
+    {% for key in keys %}
+    {% if limit == 0 or loop.index <= limit %}
+    {% set parts = key | split(pat="§") %}
+    {% set count = 100000 - (parts[0] | int) %}
+    {% set f_dir = parts[1] %}
+    {% set f_thumb = parts[2] | default(value="") %}
+    {% set folder = get_section(path=f_dir ~ "/_index.md", metadata_only=true) %}
+    <a class="folder" href="{{ folder.permalink | safe }}">
+        <span class="plate plate--wide">
+            {% if f_thumb %}
+            <img src="{{ config.extra.media_url }}/{{ f_dir }}/Thumbnails/{{ f_thumb }}" alt="{{ folder.title }}" loading="lazy">
+            {% endif %}
+        </span>
+        <span class="folder__title">{{ folder.title }}</span>
+        <span class="label">
+            <span data-pluralize="drawing" data-count="{{ count }}" data-template="{count} {word}">{{ count }}</span>
+        </span>
+    </a>
+    {% endif %}
+    {% endfor %}
+</div>
+
+{% if limit > 0 and folder_total > limit %}
+<p class="razdel__more">
+    <a href="{{ term.permalink | safe }}">все <span data-pluralize="folder" data-count="{{ folder_total }}" data-template="{count} {word}">{{ folder_total }} папок</span> →</a>
+</p>
+{% endif %}
