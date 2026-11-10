@@ -19,7 +19,7 @@ generate_feeds = false
 taxonomies = [
     {name = "tags", feed = true},
     # Основной раздел чертежа (MainCategory в метаданных), страницы /razdely/
-    {name = "razdely", paginate_by = 60}
+    {name = "razdely"}
 ]
 
 [search]
@@ -36,7 +36,8 @@ media_url = "https://archive.seapractic.ru/media"
 custom_css = "style.css"
 
 # Инвентарная строка на главной: последняя ячейка — не счётчик, а факт
-hull_range = "6–20 м"
+# От рабочей шлюпки 3,5 м до шхуны «Запад», 50 м
+hull_range = "3,5–50 м"
 
 # Ссылка на страницу поддержки. Раскомментировать, когда появится —
 # без неё кнопка «Помочь архиву» на главной не выводится.
@@ -71,50 +72,73 @@ date = "18.01.24"
 title = "Изотермический плашкоут, 1957"
 url = "https://seapractic.ru/2024/01/18/czifrovoj-arhiv-solombalskoj-sudoverfi-izotermicheskij-plashkout/"
 
-# Разделы коллекции: порядок и подписи на /razdely/.
+# Разделы коллекции: порядок, короткие подписи для фильтра (short) и описания на /razdely/.
+# vessel = true — раздел по типу судна; такие разделы считаются в «типах судов» на главной.
+# types — сколько типов судов в разделе (по умолчанию 1), например «Боты и мотоботы» — 2.
 # Названия совпадают со списком Categories в archive-tovarishestvo/rules/main-categories.json —
 # менять вместе. Раздел, которого нет в этом списке, выводится в конце без подписи.
 
 [[extra.razdely]]
 name = "Шхуны"
+vessel = true
+short = "шхуна"
 description = "Зверобойные шхуны, шхуна «Запад», финские шхуны 300 т"
 
 [[extra.razdely]]
 name = "Боты и мотоботы"
+vessel = true
+types = 2
+short = "бот"
 description = "Боты для Мурмана, мотоботы, фангсботы, дрифтер-боты, Петровский бот"
 
 [[extra.razdely]]
 name = "Ёлы"
+vessel = true
+short = "ёла"
 description = "Парусно-моторные ёлы"
 
 [[extra.razdely]]
 name = "Дори"
+vessel = true
+short = "дори"
 description = "Промысловые и транспортные дори"
 
 [[extra.razdely]]
 name = "Траулеры и катера"
+vessel = true
+types = 2
+short = "траулер, катер"
 description = "Малые рыболовные траулеры, катера, суда гидробазы"
 
 [[extra.razdely]]
 name = "Шлюпки и гребные лодки"
+vessel = true
+types = 2
+short = "шлюпка"
 description = "Рабочие шлюпки, лодки, карбасы, фофаны, баркасы, ладья"
 
 [[extra.razdely]]
 name = "Несамоходные суда"
+vessel = true
+short = "плашкоут"
 description = "Плашкоуты, кунгасы, прорези, живорыбки, плавучие причалы"
 
 [[extra.razdely]]
 name = "Судовое оборудование"
+short = "оборудование"
 description = "Нормали, устройства, механизмы и детали без указания судна"
 
 [[extra.razdely]]
 name = "Судовая мебель"
+short = "мебель"
 description = "Судовая мебель без указания судна"
 
 [[extra.razdely]]
 name = "Верфь: цеха и здания"
+short = "цех"
 description = "Цеха, участки, склады, котельная, генеральный план верфи"
 
 [[extra.razdely]]
 name = "Верфь: оборудование и оснастка"
+short = "инструмент"
 description = "Станки, штампы, прессформы, приспособления и инструмент"

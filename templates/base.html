@@ -7,8 +7,8 @@
     <meta name="description" content="{% block description %}{% if page is defined and page.description %}{{ page.description }}{% elif section is defined and section.description %}{{ section.description }}{% else %}Чертежи Соломбальской судоверфи: рабочие и прогулочные деревянные суда, оцифрованные листы 1930–1960-х годов.{% endif %}{% endblock description %}">
 
     {# Тексты кириллические, латиница — в именах файлов; грузим оба подмножества сразу #}
-    <link rel="preload" href="{{ get_url(path='fonts/Inter-Roman-cyrillic.woff2') | safe }}" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="{{ get_url(path='fonts/Inter-Roman-latin.woff2') | safe }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{ get_url(path='fonts/PTSans-400-cyrillic.woff2') | safe }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{ get_url(path='fonts/PTSansNarrow-700-cyrillic.woff2') | safe }}" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="{{ get_url(path=config.extra.custom_css | default(value='style.css')) | safe }}">
 
     <!-- Privacy-friendly analytics by Plausible -->

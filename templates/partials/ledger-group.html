@@ -1,0 +1,12 @@
+{# Блок ведомости для раздела `rz` (термин таксономии razdely): считает папки и передаёт дальше #}
+{% set_global rz_dirs = "|" %}
+{% set_global rz_folder_count = 0 %}
+{% for p in rz.pages %}
+{% set d = p.extra.directory_name | default(value="—") %}
+{% if ("|" ~ d ~ "|") not in rz_dirs %}{% set_global rz_dirs = rz_dirs ~ d ~ "|" %}{% set_global rz_folder_count = rz_folder_count + 1 %}{% endif %}
+{% endfor %}
+{% set rz_name = rz.name %}
+{% set rz_link = rz.permalink %}
+{% set rz_count = rz.page_count %}
+{% set rz_folders = rz_folder_count %}
+{% include "partials/ledger-section.html" %}

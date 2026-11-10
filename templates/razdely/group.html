@@ -1,0 +1,6 @@
+{# Строка раздела на /razdely/. Требует `term`. #}
+<section class="group" id="{{ term.slug }}">
+    {% set limit = 3 %}
+    {% set show_title = true %}
+    {% include "razdely/folders.html" %}
+</section>

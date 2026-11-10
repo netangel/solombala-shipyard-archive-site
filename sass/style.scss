@@ -1,77 +1,237 @@
 // Цифровой архив Соломбальской судоверфи
-// Modernist design system ported to Sass. Flat, architectural, Inter,
+// Modernist design system ported to Sass. Flat, architectural, PT Sans,
 // ink on a light ground, red only where it acts; zero radius, 2px rules.
 // Layouts follow wireframes 1a (главная), 1c (разделы), 1e (папка),
 // 1h (чертёж), 1i + 1j (категории).
 // Compiled by Zola (compile_sass = true) to /style.css
 
-// ─── Fonts (self-hosted Inter, variable 100–900, roman + italic) ────────────
-// Archivo ships only latin/latin-ext/vietnamese — no Cyrillic at all, so the
-// text face is Inter. Split per subset so a Latin-only page never pulls the
-// Cyrillic files and vice versa.
+// ─── Fonts (self-hosted PT Sans, PT Sans Narrow, PT Mono — as in the wireframes) ─
+// ParaType, SIL Open Font License 1.1. Split per subset like Google Fonts, so a
+// Latin-only page never pulls the Cyrillic files and vice versa.
+// PT Sans Narrow — headings, PT Sans — text, PT Mono — small caps labels and numbers.
 @font-face {
-  font-family: "Inter";
-  src: url("fonts/Inter-Italic-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
-  font-style: italic;
-  font-display: swap;
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; // cyrillic
-}
-@font-face {
-  font-family: "Inter";
-  src: url("fonts/Inter-Italic-cyrillic-ext.woff2") format("woff2");
-  font-weight: 100 900;
-  font-style: italic;
-  font-display: swap;
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F; // cyrillic-ext
-}
-@font-face {
-  font-family: "Inter";
-  src: url("fonts/Inter-Italic-latin.woff2") format("woff2");
-  font-weight: 100 900;
-  font-style: italic;
-  font-display: swap;
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; // latin
-}
-@font-face {
-  font-family: "Inter";
-  src: url("fonts/Inter-Italic-latin-ext.woff2") format("woff2");
-  font-weight: 100 900;
-  font-style: italic;
-  font-display: swap;
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; // latin-ext
-}
-@font-face {
-  font-family: "Inter";
-  src: url("fonts/Inter-Roman-cyrillic.woff2") format("woff2");
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; // cyrillic
-}
-@font-face {
-  font-family: "Inter";
-  src: url("fonts/Inter-Roman-cyrillic-ext.woff2") format("woff2");
-  font-weight: 100 900;
+  font-family: "PT Mono";
+  src: url("fonts/PTMono-400-cyrillic-ext.woff2") format("woff2");
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F; // cyrillic-ext
 }
 @font-face {
-  font-family: "Inter";
-  src: url("fonts/Inter-Roman-latin.woff2") format("woff2");
-  font-weight: 100 900;
+  font-family: "PT Mono";
+  src: url("fonts/PTMono-400-cyrillic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; // cyrillic
+}
+@font-face {
+  font-family: "PT Mono";
+  src: url("fonts/PTMono-400-latin-ext.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; // latin-ext
+}
+@font-face {
+  font-family: "PT Mono";
+  src: url("fonts/PTMono-400-latin.woff2") format("woff2");
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; // latin
 }
 @font-face {
-  font-family: "Inter";
-  src: url("fonts/Inter-Roman-latin-ext.woff2") format("woff2");
-  font-weight: 100 900;
+  font-family: "PT Sans";
+  src: url("fonts/PTSans-400i-cyrillic-ext.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F; // cyrillic-ext
+}
+@font-face {
+  font-family: "PT Sans";
+  src: url("fonts/PTSans-400i-cyrillic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; // cyrillic
+}
+@font-face {
+  font-family: "PT Sans";
+  src: url("fonts/PTSans-400i-latin-ext.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; // latin-ext
+}
+@font-face {
+  font-family: "PT Sans";
+  src: url("fonts/PTSans-400i-latin.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; // latin
+}
+@font-face {
+  font-family: "PT Sans";
+  src: url("fonts/PTSans-700i-cyrillic-ext.woff2") format("woff2");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F; // cyrillic-ext
+}
+@font-face {
+  font-family: "PT Sans";
+  src: url("fonts/PTSans-700i-cyrillic.woff2") format("woff2");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; // cyrillic
+}
+@font-face {
+  font-family: "PT Sans";
+  src: url("fonts/PTSans-700i-latin-ext.woff2") format("woff2");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; // latin-ext
+}
+@font-face {
+  font-family: "PT Sans";
+  src: url("fonts/PTSans-700i-latin.woff2") format("woff2");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; // latin
+}
+@font-face {
+  font-family: "PT Sans";
+  src: url("fonts/PTSans-400-cyrillic-ext.woff2") format("woff2");
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; // latin-ext
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F; // cyrillic-ext
+}
+@font-face {
+  font-family: "PT Sans";
+  src: url("fonts/PTSans-400-cyrillic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; // cyrillic
+}
+@font-face {
+  font-family: "PT Sans";
+  src: url("fonts/PTSans-400-latin-ext.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; // latin-ext
+}
+@font-face {
+  font-family: "PT Sans";
+  src: url("fonts/PTSans-400-latin.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; // latin
+}
+@font-face {
+  font-family: "PT Sans";
+  src: url("fonts/PTSans-700-cyrillic-ext.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F; // cyrillic-ext
+}
+@font-face {
+  font-family: "PT Sans";
+  src: url("fonts/PTSans-700-cyrillic.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; // cyrillic
+}
+@font-face {
+  font-family: "PT Sans";
+  src: url("fonts/PTSans-700-latin-ext.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; // latin-ext
+}
+@font-face {
+  font-family: "PT Sans";
+  src: url("fonts/PTSans-700-latin.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; // latin
+}
+@font-face {
+  font-family: "PT Sans Narrow";
+  src: url("fonts/PTSansNarrow-400-cyrillic-ext.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F; // cyrillic-ext
+}
+@font-face {
+  font-family: "PT Sans Narrow";
+  src: url("fonts/PTSansNarrow-400-cyrillic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; // cyrillic
+}
+@font-face {
+  font-family: "PT Sans Narrow";
+  src: url("fonts/PTSansNarrow-400-latin-ext.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; // latin-ext
+}
+@font-face {
+  font-family: "PT Sans Narrow";
+  src: url("fonts/PTSansNarrow-400-latin.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; // latin
+}
+@font-face {
+  font-family: "PT Sans Narrow";
+  src: url("fonts/PTSansNarrow-700-cyrillic-ext.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F; // cyrillic-ext
+}
+@font-face {
+  font-family: "PT Sans Narrow";
+  src: url("fonts/PTSansNarrow-700-cyrillic.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; // cyrillic
+}
+@font-face {
+  font-family: "PT Sans Narrow";
+  src: url("fonts/PTSansNarrow-700-latin-ext.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF; // latin-ext
+}
+@font-face {
+  font-family: "PT Sans Narrow";
+  src: url("fonts/PTSansNarrow-700-latin.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; // latin
 }
 
 // ─── Tokens ─────────────────────────────────────────────────────────────────
@@ -98,14 +258,14 @@
   --color-accent-600: #dd2b0f;
   --color-accent-700: #ae1800;
 
-  --font-heading: "Inter", system-ui, sans-serif;
-  --font-body: "Inter", system-ui, sans-serif;
+  --font-heading: "PT Sans Narrow", "PT Sans", system-ui, sans-serif;
+  --font-body: "PT Sans", system-ui, sans-serif;
+  --font-mono: "PT Mono", ui-monospace, monospace;
 
-  // Inter сидит шире и плотнее Archivo: крупный кегль поджимаем сильнее мелкого,
-  // а вес держим на SemiBold — 800 у Inter читается как чёрный.
-  --tracking-display: -0.045em;  // clamp() 26px и выше
-  --tracking-heading: -0.03em;   // обычные заголовки
-  --weight-heading: 600;         // h1–h4 и крупные цифры
+  // PT Sans Narrow уже узкий: трекинг почти не поджимаем, вес — Bold, как в макетах.
+  --tracking-display: -0.01em;   // clamp() 26px и выше
+  --tracking-heading: 0;         // обычные заголовки
+  --weight-heading: 700;         // h1–h4 и крупные цифры
 
   --space-1: 4px;
   --space-2: 8px;
@@ -173,8 +333,9 @@ img { display: block; max-width: 100%; }
 .hr--thin { border-top: var(--rule-thin); }
 
 .label {
+  font-family: var(--font-mono);
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 400;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--color-neutral-700);
@@ -186,9 +347,10 @@ img { display: block; max-width: 100%; }
   gap: var(--space-2) var(--space-2);
   align-items: baseline;
   padding: var(--space-4) 0;
-  font-size: 11px;
+  font-family: var(--font-heading);
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--color-neutral-700);
 }
@@ -213,8 +375,8 @@ img { display: block; max-width: 100%; }
 .brand {
   color: var(--color-text);
   font-family: var(--font-heading);
-  font-weight: 800;
-  font-size: 13px;
+  font-weight: 700;
+  font-size: 14px;
   letter-spacing: 0.04em;
   line-height: 1.25;
   text-transform: uppercase;
@@ -299,6 +461,8 @@ img { display: block; max-width: 100%; }
   border-right: var(--rule-thin);
 }
 .stat:last-child { border-right: 0; }
+a.stat { color: inherit; }
+a.stat:hover { text-decoration: none; background: var(--color-accent-100); }
 .stat__num {
   font-family: var(--font-heading);
   font-weight: var(--weight-heading);
@@ -431,8 +595,9 @@ img { display: block; max-width: 100%; }
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2) var(--space-6);
+  font-family: var(--font-mono);
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 400;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-neutral-700);
@@ -453,14 +618,14 @@ img { display: block; max-width: 100%; }
   border: 1px solid var(--color-text);
   border-radius: var(--radius-md);
   color: var(--color-text);
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 1.7;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.6;
 }
 .chip:hover { background: var(--color-accent); border-color: var(--color-accent); color: #fff; text-decoration: none; }
 .chip[aria-current="true"],
 .chip--on { background: var(--color-text); border-color: var(--color-text); color: var(--color-bg); }
-.chip__count { font-size: 11px; color: var(--color-neutral-700); }
+.chip__count { font-family: var(--font-mono); font-size: 11px; color: var(--color-neutral-700); }
 .chip:hover .chip__count { color: color-mix(in srgb, #fff 80%, transparent); }
 
 // ─── Buttons ────────────────────────────────────────────────────────────────
@@ -507,8 +672,18 @@ img { display: block; max-width: 100%; }
 .folder { display: block; color: var(--color-text); }
 .folder:hover { text-decoration: none; }
 .folder:hover .folder__title { color: var(--color-accent-700); }
-.folder__title { font-size: 16px; margin: var(--space-2) 0 var(--space-1); }
-.folder__note { display: block; margin-top: var(--space-1); font-size: 14px; color: var(--color-neutral-700); }
+.folder__title { display: block; font-family: var(--font-heading); font-weight: 700; font-size: 18px; line-height: 1.2; margin: var(--space-3) 0 var(--space-1); }
+// 1c: три папки в ряд
+.folders--three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 900px) { .folders--three { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .folders--three { grid-template-columns: minmax(0, 1fr); } }
+.tech-index__more { display: contents; }
+.tech-index__more > summary { list-style: none; cursor: pointer; color: var(--color-neutral-700); border-color: var(--color-neutral-400); }
+.tech-index__more > summary::-webkit-details-marker { display: none; }
+.tech-index__more[open] > summary { display: none; }
+.group__head h2 a { color: var(--color-text); }
+.group__head h2 a:hover { color: var(--color-accent-700); text-decoration: none; }
+.razdel__more { margin-top: var(--space-3); font-size: 14px; }
 
 .tech-index { padding: var(--space-6) 0 var(--space-8); border-top: var(--rule); }
 
@@ -547,8 +722,9 @@ img { display: block; max-width: 100%; }
 .sheet__num {
   display: block;
   margin-top: var(--space-1);
+  font-family: var(--font-mono);
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 400;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-neutral-700);
@@ -725,7 +901,7 @@ img { display: block; max-width: 100%; }
   padding: var(--space-2) 0;
   border-bottom: var(--rule-thin);
 }
-.spec dt { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-neutral-700); }
+.spec dt { font-family: var(--font-mono); font-size: 11px; font-weight: 400; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-neutral-700); }
 .spec dd { margin: 0; font-size: 14px; overflow-wrap: anywhere; }
 // Заглушки: данные, которых генератор пока не пишет в front-matter
 .spec dd.mock { color: var(--color-neutral-600); }
@@ -791,8 +967,9 @@ img { display: block; max-width: 100%; }
   text-align: left;
   padding: var(--space-2) var(--space-3) var(--space-2) 0;
   border-bottom: var(--rule);
+  font-family: var(--font-mono);
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 400;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--color-neutral-700);
@@ -807,9 +984,59 @@ img { display: block; max-width: 100%; }
 .ledger tbody tr:hover { background: var(--color-accent-100); }
 .ledger td a { color: var(--color-text); }
 .ledger td a:hover { color: var(--color-accent-700); }
-.ledger .num { text-align: right; font-variant-numeric: tabular-nums; font-size: 13px; width: 96px; }
-.ledger .axis { width: 160px; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-neutral-700); }
+.ledger .axis a { color: var(--color-neutral-700); }
+.ledger .num { text-align: right; font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 13px; width: 96px; }
+.ledger .axis { width: 200px; font-family: var(--font-mono); font-size: 11px; font-weight: 400; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-neutral-700); }
 .ledger tbody tr:last-child td { border-bottom: var(--rule); }
+
+// 1j: блоки разделов сворачиваются («ось можно свернуть»). Колонки строки-раздела
+// совпадают с колонками таблицы внутри: 200px · всё остальное · 96px · 96px.
+.ledger-tools { display: flex; justify-content: flex-end; margin-top: var(--space-4); }
+.ledger-groups { margin: var(--space-4) 0 var(--space-8); border-bottom: var(--rule); }
+.ledger-row {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr) 96px 96px;
+  align-items: baseline;
+}
+.ledger-row > * { padding: var(--space-2) var(--space-3) var(--space-2) 0; }
+.ledger-row .num { text-align: right; font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 13px; }
+.ledger-row--head {
+  border-bottom: var(--rule);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-neutral-700);
+}
+.ledger-row--head .num { font-size: 10px; }
+.ledger-group { border-top: var(--rule-thin); }
+.ledger-group:first-of-type { border-top: 0; }
+.ledger-row--group { cursor: pointer; list-style: none; }
+.ledger-row--group::-webkit-details-marker { display: none; }
+.ledger-row--group:hover { background: var(--color-accent-100); }
+.ledger-row__name {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text);
+}
+.ledger-row__name::before { content: "▸"; display: inline-block; width: 1.4em; color: var(--color-neutral-700); }
+.ledger-group[open] > .ledger-row--group .ledger-row__name::before { content: "▾"; }
+.ledger-row__terms { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); font-size: 14px; color: var(--color-neutral-700); }
+.ledger-row__terms a { color: var(--color-neutral-700); font-size: 13px; }
+.ledger-row__terms a:hover { color: var(--color-accent-700); }
+.ledger--rows { margin: 0; table-layout: fixed; }
+.ledger--rows .ledger__col-axis { width: 200px; }
+.ledger--rows .ledger__col-num { width: 96px; }
+.ledger--rows tbody tr:last-child td { border-bottom: 0; }
+@media (max-width: 640px) {
+  .ledger-row { grid-template-columns: minmax(0, 1fr) 64px 64px; }
+  .ledger-row--head > :first-child, .ledger-row__terms { display: none; }
+  .ledger--rows .ledger__col-axis { width: 0; }
+  .ledger--rows .axis { display: none; }
+  .ledger--rows .ledger__col-num { width: 64px; }
+}
 
 // ─── Prose (article / about) ────────────────────────────────────────────────
 .prose { max-width: 70ch; padding: var(--space-6) 0 var(--space-8); font-size: 17px; }
@@ -827,7 +1054,7 @@ img { display: block; max-width: 100%; }
 }
 .prose table { width: 100%; border-collapse: collapse; margin: var(--space-6) 0; }
 .prose th, .prose td { text-align: left; padding: var(--space-2) var(--space-4) var(--space-2) 0; border-bottom: var(--rule-thin); }
-.prose th { border-bottom: var(--rule); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; }
+.prose th { border-bottom: var(--rule); font-family: var(--font-mono); font-weight: 400; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; }
 
 // ─── Pager ──────────────────────────────────────────────────────────────────
 .pager {
