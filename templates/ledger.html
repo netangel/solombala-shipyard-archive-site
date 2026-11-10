@@ -7,13 +7,21 @@
        { name = "Тип судна", tags = ["карбас", "шхуна зверобойная", …] },
        { name = "Вид чертежа", tags = [...] },
      ]
-   Термины, не попавшие ни в одну ось, уходят в «Прочее». #}
+   Термины, не попавшие ни в одну ось, уходят в «Прочее».
+   Первая ось «Раздел» строится сама — из таксономии razdely (MainCategory),
+   поэтому «Тип судна» отдельной осью из тегов задавать не нужно. #}
 
 {% block site_header %}{% set header_ink = true %}{% include "partials/header.html" %}{% endblock site_header %}
 
 {% block content %}
 {% set tags = get_taxonomy(kind="tags") %}
+{# Первая ось — разделы коллекции (таксономия razdely), в порядке config.extra.razdely #}
+{% set razdely = get_taxonomy(kind="razdely") %}
+{% set razdely_cfg = config.extra.razdely | default(value=[]) %}
+{% set_global razdely_names = "|" %}
+{% for cfg in razdely_cfg %}{% set_global razdely_names = razdely_names ~ cfg.name ~ "|" %}{% endfor %}
 {% set axes = config.extra.axes | default(value=[]) %}
+{% set razdely_axis = 1 if razdely.items | length > 0 else 0 %}
 {% set sorted_terms = tags.items | sort(attribute="page_count") | reverse %}
 {% set_global total_sheets = 0 %}
 {% for term in tags.items %}{% set_global total_sheets = total_sheets + (term.pages | length) %}{% endfor %}
@@ -22,7 +30,7 @@
     <div class="page-head" style="border-bottom:0">
         <h1>{{ page.title | default(value="Словарь архива") }}</h1>
         <div class="page-head__meta">
-            <span>{{ axes | length + 1 }} осей</span>
+            <span>{{ axes | length + razdely_axis + 1 }} осей</span>
             <span>{{ tags.items | length }} терминов</span>
             <span>сортировка по числу чертежей</span>
         </div>
@@ -38,6 +46,39 @@
             </tr>
         </thead>
         <tbody>
+            {# Раздел: сначала разделы из конфига по порядку, затем остальные #}
+            {% set_global axis_rows = 0 %}
+            {% for cfg in razdely_cfg %}
+            {% for term in razdely.items %}
+            {% if term.name == cfg.name %}
+            {% set_global dirs = "" %}
+            {% for p in term.pages %}{% set_global dirs = dirs ~ (p.extra.directory_name | default(value="—")) ~ "|" %}{% endfor %}
+            {% set folders = dirs | trim_end(pat="|") | split(pat="|") | unique %}
+            <tr>
+                <td class="axis">{% if axis_rows == 0 %}Раздел{% endif %}</td>
+                <td><a href="{{ term.permalink }}">{{ term.name }}</a></td>
+                <td class="num">{{ term.pages | length }}</td>
+                <td class="num">{% if term.pages | length > 0 %}{{ folders | length }}{% else %}0{% endif %}</td>
+            </tr>
+            {% set_global axis_rows = axis_rows + 1 %}
+            {% endif %}
+            {% endfor %}
+            {% endfor %}
+            {% for term in razdely.items %}
+            {% if ("|" ~ term.name ~ "|") not in razdely_names %}
+            {% set_global dirs = "" %}
+            {% for p in term.pages %}{% set_global dirs = dirs ~ (p.extra.directory_name | default(value="—")) ~ "|" %}{% endfor %}
+            {% set folders = dirs | trim_end(pat="|") | split(pat="|") | unique %}
+            <tr>
+                <td class="axis">{% if axis_rows == 0 %}Раздел{% endif %}</td>
+                <td><a href="{{ term.permalink }}">{{ term.name }}</a></td>
+                <td class="num">{{ term.pages | length }}</td>
+                <td class="num">{% if term.pages | length > 0 %}{{ folders | length }}{% else %}0{% endif %}</td>
+            </tr>
+            {% set_global axis_rows = axis_rows + 1 %}
+            {% endif %}
+            {% endfor %}
+
             {% for axis in axes %}
             {% set_global axis_rows = 0 %}
             {% for term in sorted_terms %}
