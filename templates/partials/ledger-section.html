@@ -1,8 +1,10 @@
-{# Строки ведомости для одного раздела. Требует `tags`, `rz_name`, `rz_link`.
+{# Свёрнутый блок ведомости для одного раздела (макет 1j: «ось можно свернуть»).
+   Требует `tags`, `rz_name`, `rz_link`, `rz_count` (чертежи раздела), `rz_folders` (папки раздела).
    Пустой `rz_name` — чертежи без раздела.
    Tera 2 не умеет массивы: записи для сортировки копим строкой
    «(100000 − листов)§термин§ссылка§папок», разделитель записей «¶». #}
 {% set_global keys_s = "" %}
+{% set_global term_count = 0 %}
 {% for term in tags.items %}
 {% set_global n = 0 %}
 {% set_global dirs = "|" %}
@@ -15,17 +17,38 @@
 {% if ("|" ~ d ~ "|") not in dirs %}{% set_global dirs = dirs ~ d ~ "|" %}{% set_global nd = nd + 1 %}{% endif %}
 {% endif %}
 {% endfor %}
-{% if n > 0 %}{% set_global keys_s = keys_s ~ (100000 - n) ~ "§" ~ term.name ~ "§" ~ term.permalink ~ "§" ~ nd ~ "¶" %}{% endif %}
+{% if n > 0 %}
+{% set_global term_count = term_count + 1 %}
+{% set_global keys_s = keys_s ~ (100000 - n) ~ "§" ~ term.name ~ "§" ~ term.permalink ~ "§" ~ nd ~ "¶" %}
+{% endif %}
 {% endfor %}
 
-{% if keys_s %}
-{% for key in keys_s | trim_end(pat="¶") | split(pat="¶") | sort %}
-{% set parts = key | split(pat="§") %}
-<tr>
-    <td class="axis">{% if loop.first %}{% if rz_name %}<a href="{{ rz_link | safe }}">{{ rz_name }}</a>{% else %}Без раздела{% endif %}{% endif %}</td>
-    <td><a href="{{ parts[2] | safe }}">{{ parts[1] }}</a></td>
-    <td class="num">{{ 100000 - (parts[0] | int) }}</td>
-    <td class="num">{{ parts[3] }}</td>
-</tr>
-{% endfor %}
+{% if rz_count > 0 %}
+<details class="ledger-group">
+    <summary class="ledger-row ledger-row--group">
+        <span class="ledger-row__name">{% if rz_name %}{{ rz_name }}{% else %}Без раздела{% endif %}</span>
+        <span class="ledger-row__terms">
+            <span data-pluralize="term" data-count="{{ term_count }}" data-template="{count} {word}">{{ term_count }} терминов</span>
+            {% if rz_link %}<a href="{{ rz_link | safe }}">папки раздела →</a>{% endif %}
+        </span>
+        <span class="num">{{ rz_count }}</span>
+        <span class="num">{{ rz_folders }}</span>
+    </summary>
+    {% if keys_s %}
+    <table class="ledger ledger--rows">
+        <colgroup><col class="ledger__col-axis"><col><col class="ledger__col-num"><col class="ledger__col-num"></colgroup>
+        <tbody>
+            {% for key in keys_s | trim_end(pat="¶") | split(pat="¶") | sort %}
+            {% set parts = key | split(pat="§") %}
+            <tr>
+                <td class="axis"></td>
+                <td><a href="{{ parts[2] | safe }}">{{ parts[1] }}</a></td>
+                <td class="num">{{ 100000 - (parts[0] | int) }}</td>
+                <td class="num">{{ parts[3] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+</details>
 {% endif %}
