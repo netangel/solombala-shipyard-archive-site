@@ -88,6 +88,12 @@
                         {% if dir %}<span class="spec__sub">{{ dir }}</span>{% endif %}
                     </dd>
                 </div>
+                {% if page.taxonomies.razdely %}
+                <div class="spec__row">
+                    <dt>Раздел</dt>
+                    <dd>{% for razdel in page.taxonomies.razdely %}<a href="{{ get_taxonomy_url(kind='razdely', name=razdel) | safe }}">{{ razdel }}</a>{% endfor %}</dd>
+                </div>
+                {% endif %}
                 {% if page.extra.tif_file %}
                 <div class="spec__row"><dt>Оригинал</dt><dd>{{ page.extra.tif_file }}</dd></div>
                 {% elif page.extra.original_name %}

@@ -23,6 +23,10 @@ on:
         description: "Metadata branch to build from"
         required: true
         default: "main"
+      scripts_ref:
+        description: "Scripts (archive-tovarishestvo) branch to convert with"
+        required: true
+        default: "master"
 
 env:
   METADATA_REPO_URL: "https://git.dwal.in/solombala-archive/metadata.git"
@@ -53,6 +57,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: ${{ env.SCRIPTS_REPO }}
+          ref: ${{ inputs.scripts_ref || 'master' }}
           path: scripts
 
       - name: Install PowerShell
