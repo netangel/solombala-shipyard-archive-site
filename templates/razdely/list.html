@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{# Разделы коллекции: таксономия razdely (MainCategory в метаданных).
-   Сверху — список разделов, ниже по строке на раздел: название, число чертежей и папок,
-   первые шесть папок с чертежами этого раздела.
-   Порядок — config.extra.razdely; разделы не из списка идут в конце. #}
+{# Разделы коллекции (макет 1c): таксономия razdely (MainCategory в метаданных).
+   Сверху — фильтр-разделы, ниже по строке на раздел: название, число папок и чертежей,
+   три папки с чертежами раздела. Внизу — технический индекс партий сканирования.
+   Порядок и короткие подписи — config.extra.razdely; разделы не из списка идут в конце. #}
 
 {% block title %}Разделы коллекции — Цифровой архив Соломбальской судоверфи{% endblock title %}
 
@@ -15,6 +15,8 @@
 {% for cfg in razdely_cfg %}{% set_global cfg_names = cfg_names ~ cfg.name ~ "|" %}{% endfor %}
 {% set_global total_sheets = 0 %}
 {% for term in terms %}{% set_global total_sheets = total_sheets + term.page_count %}{% endfor %}
+{% set folder_count = root.subsections | length %}
+{% set index_visible = 16 %}
 
 <div class="wrap">
     <nav class="crumbs" aria-label="Хлебные крошки">
@@ -24,15 +26,17 @@
     <div class="page-head" style="border-bottom:0">
         <h1>Разделы коллекции</h1>
         <p class="page-head__lede">
-            Чертежи по типу судна и по назначению:
             <span data-pluralize="drawing" data-count="{{ total_sheets }}" data-template="{count} {word}">{{ total_sheets }} чертежей</span>
-            в {{ terms | length }} разделах.
+            из <span data-pluralize="folder_from" data-count="{{ folder_count }}" data-template="{count} {word}">{{ folder_count }} папок</span>,
+            сгруппированных по типу судна и по назначению чертежа.
+            Порядковые партии сканирования — в техническом индексе внизу страницы.
         </p>
         <div class="chips" style="margin-top:var(--space-4)">
+            <span class="chip chip--on">все</span>
             {% for cfg in razdely_cfg %}
             {% for term in terms %}
             {% if term.name == cfg.name %}
-            <a class="chip" href="#{{ term.slug }}">{{ term.name }}</a>
+            <a class="chip" href="#{{ term.slug }}" title="{{ term.name }}">{{ cfg.short | default(value=term.name) }}</a>
             {% endif %}
             {% endfor %}
             {% endfor %}
@@ -57,13 +61,36 @@
     {% endif %}
     {% endfor %}
 
+    {# Технический индекс: только порядковые партии («01-70», «071-120»…) по первому номеру,
+       первые index_visible — сразу, остальные под «… ещё N» #}
+    {% set_global batches_s = "" %}
+    {% for s in root.subsections %}
+    {% if s is matching(pat="^[0-9]+-[0-9]") %}
+    {% set first_no = s | split(pat="-") | first | int %}
+    {% set_global batches_s = batches_s ~ (100000 + first_no) ~ "§" ~ s ~ "¶" %}
+    {% endif %}
+    {% endfor %}
+    {% set batches = batches_s | trim_end(pat="¶") | split(pat="¶") | sort %}
     <section class="tech-index">
-        <div class="label">Все папки архива · партии сканирования</div>
+        <div class="label">Технический индекс · партии сканирования</div>
         <div class="chips" style="margin-top:var(--space-3)">
-            {% for s in root.subsections | sort %}
-            {% set folder = get_section(path=s, metadata_only=true) %}
+            {% for key in batches %}
+            {% if loop.index <= index_visible %}
+            {% set folder = get_section(path=key | split(pat="§") | last, metadata_only=true) %}
             <a class="chip" href="{{ folder.permalink }}">{{ folder.title }}</a>
+            {% endif %}
             {% endfor %}
+            {% if batches | length > index_visible %}
+            <details class="tech-index__more">
+                <summary class="chip">… ещё {{ batches | length - index_visible }}</summary>
+                {% for key in batches %}
+                {% if loop.index > index_visible %}
+                {% set folder = get_section(path=key | split(pat="§") | last, metadata_only=true) %}
+                <a class="chip" href="{{ folder.permalink }}">{{ folder.title }}</a>
+                {% endif %}
+                {% endfor %}
+            </details>
+            {% endif %}
         </div>
     </section>
 </div>

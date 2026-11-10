@@ -51,6 +51,13 @@ const PLURAL_FORMS = {
     many: 'папках',
     other: 'папках'
   },
+  // «из 1 папки», «из 5 папок»
+  folder_from: {
+    one: 'папки',
+    few: 'папок',
+    many: 'папок',
+    other: 'папок'
+  },
   folder: {
     one: 'папка',
     few: 'папки',

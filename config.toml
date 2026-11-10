@@ -71,50 +71,61 @@ date = "18.01.24"
 title = "Изотермический плашкоут, 1957"
 url = "https://seapractic.ru/2024/01/18/czifrovoj-arhiv-solombalskoj-sudoverfi-izotermicheskij-plashkout/"
 
-# Разделы коллекции: порядок и подписи на /razdely/.
+# Разделы коллекции: порядок, короткие подписи для фильтра (short) и описания на /razdely/.
 # Названия совпадают со списком Categories в archive-tovarishestvo/rules/main-categories.json —
 # менять вместе. Раздел, которого нет в этом списке, выводится в конце без подписи.
 
 [[extra.razdely]]
 name = "Шхуны"
+short = "шхуна"
 description = "Зверобойные шхуны, шхуна «Запад», финские шхуны 300 т"
 
 [[extra.razdely]]
 name = "Боты и мотоботы"
+short = "бот"
 description = "Боты для Мурмана, мотоботы, фангсботы, дрифтер-боты, Петровский бот"
 
 [[extra.razdely]]
 name = "Ёлы"
+short = "ёла"
 description = "Парусно-моторные ёлы"
 
 [[extra.razdely]]
 name = "Дори"
+short = "дори"
 description = "Промысловые и транспортные дори"
 
 [[extra.razdely]]
 name = "Траулеры и катера"
+short = "траулер, катер"
 description = "Малые рыболовные траулеры, катера, суда гидробазы"
 
 [[extra.razdely]]
 name = "Шлюпки и гребные лодки"
+short = "шлюпка"
 description = "Рабочие шлюпки, лодки, карбасы, фофаны, баркасы, ладья"
 
 [[extra.razdely]]
 name = "Несамоходные суда"
+short = "плашкоут"
 description = "Плашкоуты, кунгасы, прорези, живорыбки, плавучие причалы"
 
 [[extra.razdely]]
 name = "Судовое оборудование"
+short = "оборудование"
 description = "Нормали, устройства, механизмы и детали без указания судна"
 
 [[extra.razdely]]
 name = "Судовая мебель"
+short = "мебель"
 description = "Судовая мебель без указания судна"
 
 [[extra.razdely]]
 name = "Верфь: цеха и здания"
+short = "цех"
 description = "Цеха, участки, склады, котельная, генеральный план верфи"
 
 [[extra.razdely]]
 name = "Верфь: оборудование и оснастка"
+short = "инструмент"
 description = "Станки, штампы, прессформы, приспособления и инструмент"
