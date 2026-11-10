@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{# Разделы коллекции: таксономия razdely (MainCategory в метаданных).
+   Порядок и подписи — config.extra.razdely; разделы не из списка идут в конце.
+   Ниже — папки архива (партии сканирования). #}
+
+{% block title %}Разделы коллекции — Цифровой архив Соломбальской судоверфи{% endblock title %}
+
+{% block content %}
+{% set root = get_section(path="_index.md") %}
+{# Tera 2 не умеет map и append: названия из конфига копим строкой "|a|b|" #}
+{% set_global cfg_names = "|" %}
+{% for cfg in config.extra.razdely | default(value=[]) %}{% set_global cfg_names = cfg_names ~ cfg.name ~ "|" %}{% endfor %}
+{% set_global total_sheets = 0 %}
+{% for term in terms %}{% set_global total_sheets = total_sheets + term.page_count %}{% endfor %}
+
+<div class="wrap">
+    <nav class="crumbs" aria-label="Хлебные крошки">
+        <a href="{{ config.base_url }}">Архив</a> <span aria-hidden="true">/</span> <strong>Разделы</strong>
+    </nav>
+
+    <div class="page-head" style="border-bottom:0">
+        <h1>Разделы коллекции</h1>
+        <p class="page-head__lede">
+            Чертежи по типу судна и по назначению.
+            <span data-pluralize="drawing" data-count="{{ total_sheets }}" data-template="{count} {word}">{{ total_sheets }} чертежей</span>
+            в {{ terms | length }} разделах. Папки архива — внизу страницы.
+        </p>
+    </div>
+
+    <section class="group">
+        <div class="folders">
+            {% for cfg in config.extra.razdely | default(value=[]) %}
+            {% for term in terms %}
+            {% if term.name == cfg.name %}
+            {% set description = cfg.description %}
+            {% include "razdely/card.html" %}
+            {% endif %}
+            {% endfor %}
+            {% endfor %}
+
+            {% for term in terms %}
+            {% if ("|" ~ term.name ~ "|") not in cfg_names %}
+            {% set description = "" %}
+            {% include "razdely/card.html" %}
+            {% endif %}
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="tech-index">
+        <div class="label">Папки архива · партии сканирования</div>
+        <div class="chips" style="margin-top:var(--space-3)">
+            {% for s in root.subsections | sort %}
+            {% set folder = get_section(path=s) %}
+            <a class="chip" href="{{ folder.permalink }}">{{ folder.title }}</a>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock content %}

@@ -508,6 +508,7 @@ img { display: block; max-width: 100%; }
 .folder:hover { text-decoration: none; }
 .folder:hover .folder__title { color: var(--color-accent-700); }
 .folder__title { font-size: 16px; margin: var(--space-2) 0 var(--space-1); }
+.folder__note { display: block; margin-top: var(--space-1); font-size: 14px; color: var(--color-neutral-700); }
 
 .tech-index { padding: var(--space-6) 0 var(--space-8); border-top: var(--rule); }
 

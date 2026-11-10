@@ -17,7 +17,9 @@ minify_html = true
 generate_feeds = false
 
 taxonomies = [
-    {name = "tags", feed = true}
+    {name = "tags", feed = true},
+    # Основной раздел чертежа (MainCategory в метаданных), страницы /razdely/
+    {name = "razdely", paginate_by = 60}
 ]
 
 [search]
@@ -68,3 +70,51 @@ url = "https://seapractic.ru/2024/02/29/drifter-bot-czifrovoj-arhiv-solombalskoj
 date = "18.01.24"
 title = "Изотермический плашкоут, 1957"
 url = "https://seapractic.ru/2024/01/18/czifrovoj-arhiv-solombalskoj-sudoverfi-izotermicheskij-plashkout/"
+
+# Разделы коллекции: порядок и подписи на /razdely/.
+# Названия совпадают со списком Categories в archive-tovarishestvo/rules/main-categories.json —
+# менять вместе. Раздел, которого нет в этом списке, выводится в конце без подписи.
+
+[[extra.razdely]]
+name = "Шхуны"
+description = "Зверобойные шхуны, шхуна «Запад», финские шхуны 300 т"
+
+[[extra.razdely]]
+name = "Боты и мотоботы"
+description = "Боты для Мурмана, мотоботы, фангсботы, дрифтер-боты, Петровский бот"
+
+[[extra.razdely]]
+name = "Ёлы"
+description = "Парусно-моторные ёлы"
+
+[[extra.razdely]]
+name = "Дори"
+description = "Промысловые и транспортные дори"
+
+[[extra.razdely]]
+name = "Траулеры и катера"
+description = "Малые рыболовные траулеры, катера, суда гидробазы"
+
+[[extra.razdely]]
+name = "Шлюпки и гребные лодки"
+description = "Рабочие шлюпки, лодки, карбасы, фофаны, баркасы, ладья"
+
+[[extra.razdely]]
+name = "Несамоходные суда"
+description = "Плашкоуты, кунгасы, прорези, живорыбки, плавучие причалы"
+
+[[extra.razdely]]
+name = "Судовое оборудование"
+description = "Нормали, устройства, механизмы и детали без указания судна"
+
+[[extra.razdely]]
+name = "Судовая мебель"
+description = "Судовая мебель без указания судна"
+
+[[extra.razdely]]
+name = "Верфь: цеха и здания"
+description = "Цеха, участки, склады, котельная, генеральный план верфи"
+
+[[extra.razdely]]
+name = "Верфь: оборудование и оснастка"
+description = "Станки, штампы, прессформы, приспособления и инструмент"

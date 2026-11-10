@@ -1,0 +1,22 @@
+{# Карточка раздела на /razdely/. Требует `term` и `description`.
+   Обложка — эскиз первого чертежа раздела, у которого он есть. #}
+{% set_global cover = "" %}
+{% set_global cover_dir = "" %}
+{% for p in term.pages %}
+{% if not cover and p.extra.thumbnail %}
+{% set_global cover = p.extra.thumbnail %}
+{% set_global cover_dir = p.extra.directory_name %}
+{% endif %}
+{% endfor %}
+<a class="folder" href="{{ term.permalink | safe }}">
+    <span class="plate plate--wide">
+        {% if cover %}
+        <img src="{{ config.extra.media_url }}/{{ cover_dir }}/Thumbnails/{{ cover }}" alt="{{ term.name }}" loading="lazy">
+        {% endif %}
+    </span>
+    <span class="folder__title">{{ term.name }}</span>
+    <span class="label">
+        <span data-pluralize="drawing" data-count="{{ term.page_count }}" data-template="{count} {word}">{{ term.page_count }}</span>
+    </span>
+    {% if description %}<span class="folder__note">{{ description }}</span>{% endif %}
+</a>

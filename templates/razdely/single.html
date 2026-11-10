@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{# Один раздел коллекции — чертежи контактным листом, по 60 на странице #}
+
+{% block content %}
+{% set sheets = paginator.pages if paginator is defined else term.pages %}
+{% set_global description = "" %}
+{% for cfg in config.extra.razdely | default(value=[]) %}
+{% if cfg.name == term.name %}{% set_global description = cfg.description %}{% endif %}
+{% endfor %}
+
+<div class="wrap">
+    <nav class="crumbs" aria-label="Хлебные крошки">
+        <a href="{{ config.base_url }}">Архив</a>
+        <span aria-hidden="true">/</span>
+        <a href="{{ get_url(path='razdely') | safe }}">Разделы</a>
+        <span aria-hidden="true">/</span>
+        <strong>{{ term.name }}</strong>
+    </nav>
+
+    <div class="page-head">
+        <h1>{{ term.name }}</h1>
+        {% if description %}<p class="page-head__lede">{{ description }}</p>{% endif %}
+        <div class="page-head__meta">
+            <span data-pluralize="drawing" data-count="{{ term.page_count }}" data-template="{count} {word}">{{ term.page_count }} чертежей</span>
+        </div>
+    </div>
+
+    <div class="contact-sheet" style="margin-top:var(--space-6)">
+        {% for page in sheets %}
+        {% set sheet_page = page %}
+        {% include "partials/sheet-thumb.html" %}
+        {% endfor %}
+    </div>
+
+    {% include "partials/pager.html" %}
+</div>
+{% endblock content %}
