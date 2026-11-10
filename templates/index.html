@@ -1,18 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-{# Tera 2 не умеет складывать массивы, поэтому считаем счётчиком,
-   а список групп копим строкой и разбираем через split/unique #}
+{# Tera 2 не умеет складывать массивы, поэтому считаем счётчиком #}
 {% set_global total_sheets = 0 %}
-{% set_global groups_s = "" %}
 {% for s in section.subsections %}
 {% set sub = get_section(path=s) %}
 {% set_global total_sheets = total_sheets + (sub.pages | length) %}
-{% set grp = sub.extra.vessel_group | default(value="") %}
-{% if grp %}{% set_global groups_s = groups_s ~ grp ~ "|" %}{% endif %}
 {% endfor %}
-{% set_global groups = [] %}
-{% if groups_s %}{% set_global groups = groups_s | trim_end(pat="|") | split(pat="|") | unique %}{% endif %}
 
 <div class="wrap">
     <div class="stat-row">
@@ -26,12 +20,20 @@
             <div class="stat__num">{{ section.subsections | length }}</div>
             <div class="stat__label label">папок</div>
         </div>
-        <div class="stat">
-            <div class="stat__num">{{ groups | length }}</div>
+        {# Типы судов — сумма types (по умолчанию 1) разделов с vessel = true в config.extra.razdely, где есть чертежи #}
+        {% set razdely = get_taxonomy(kind="razdely") %}
+        {% set_global vessel_types = 0 %}
+        {% for cfg in config.extra.razdely | default(value=[]) %}
+        {% if cfg.vessel | default(value=false) %}
+        {% for rz in razdely.items %}{% if rz.name == cfg.name and rz.page_count > 0 %}{% set_global vessel_types = vessel_types + (cfg.types | default(value=1)) %}{% endif %}{% endfor %}
+        {% endif %}
+        {% endfor %}
+        <a class="stat" href="{{ get_url(path='razdely') | safe }}">
+            <div class="stat__num">{{ vessel_types }}</div>
             <div class="stat__label label">типов судов</div>
-        </div>
+        </a>
         <div class="stat">
-            <div class="stat__num">{{ config.extra.hull_range | default(value="6–20 м") }}</div>
+            <div class="stat__num">{{ config.extra.hull_range | default(value="3,5–50 м") }}</div>
             <div class="stat__label label">длина корпусов</div>
         </div>
     </div>

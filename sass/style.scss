@@ -461,6 +461,8 @@ img { display: block; max-width: 100%; }
   border-right: var(--rule-thin);
 }
 .stat:last-child { border-right: 0; }
+a.stat { color: inherit; }
+a.stat:hover { text-decoration: none; background: var(--color-accent-100); }
 .stat__num {
   font-family: var(--font-heading);
   font-weight: var(--weight-heading);
